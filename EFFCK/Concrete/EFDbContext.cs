@@ -15,13 +15,12 @@ namespace EFFCK.Concrete
 
         public virtual DbSet<Daily_ReportRW> Daily_ReportRW { get; set; }
         public virtual DbSet<FuelSaleRW> FuelSaleRW { get; set; }
-        public virtual DbSet<ReceivingFuelRW> ReceivingFuelRW { get; set; }
-        public virtual DbSet<RemainsTanksRW> RemainsTanksRW { get; set; }
         public virtual DbSet<Incomes> Incomes { get; set; }
         public virtual DbSet<ManualMode> ManualMode { get; set; }
         public virtual DbSet<Outcomes> Outcomes { get; set; }
+        public virtual DbSet<ReceivingFuelRW> ReceivingFuelRW { get; set; }
         public virtual DbSet<Remains> Remains { get; set; }
-        public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
+        public virtual DbSet<RemainsTanksRW> RemainsTanksRW { get; set; }
         public virtual DbSet<UsersChanges> UsersChanges { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

@@ -51,22 +51,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstract\IRepository.cs" />
+    <Compile Include="Concrete\EFUsersChanges.cs" />
     <Compile Include="Concrete\EFDaily_ReportRW.cs" />
     <Compile Include="Concrete\EFRemainsTanksRW.cs" />
     <Compile Include="Concrete\EFReceivingFuelRW.cs" />
     <Compile Include="Concrete\EFFuelSaleRW.cs" />
     <Compile Include="Concrete\EFRepository.cs" />
+    <Compile Include="Concrete\EFDbContext.cs" />
+    <Compile Include="Entities\Daily_ReportRW.cs" />
     <Compile Include="Entities\FuelSaleRW.cs" />
     <Compile Include="Entities\Incomes.cs" />
     <Compile Include="Entities\ManualMode.cs" />
-    <Compile Include="Concrete\EFDbContext.cs" />
     <Compile Include="Entities\Outcomes.cs" />
-    <Compile Include="Entities\Remains.cs" />
-    <Compile Include="Entities\sysdiagrams.cs" />
-    <Compile Include="Entities\UsersChanges.cs" />
     <Compile Include="Entities\ReceivingFuelRW.cs" />
+    <Compile Include="Entities\Remains.cs" />
     <Compile Include="Entities\RemainsTanksRW.cs" />
-    <Compile Include="Entities\Daily_ReportRW.cs" />
+    <Compile Include="Entities\UsersChanges.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

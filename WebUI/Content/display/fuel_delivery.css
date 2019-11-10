@@ -1,0 +1,59 @@
+﻿body {
+    font-size: 13px;
+}
+
+div {
+    border-radius: 3px;
+}
+
+legend {
+    padding: 0;
+    border: 0;
+}
+
+legend {
+    display: block;
+    width: 100%;
+    padding: 0;
+    margin-bottom: 0px;
+    font-size: 13px;
+
+    line-height: inherit;
+    color: #2a17a7;
+    border: 0;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+label {
+    /*display: inline-block;*/
+    margin-bottom: 0px;
+    font-weight: bold;
+    /*color:blue;*/
+}
+
+div#content {
+    width: 700px;
+}
+
+.table-display {
+    font-size: 13px;
+}
+
+.table-display th {
+    width:150px;
+    text-align:right;
+}
+
+.table-display td {
+    width:200px;
+}
+
+.table-display td input {
+    padding:3px;
+    width:95%;
+}
+
+.button-panel {
+    text-align:center;
+    padding:5px;
+}

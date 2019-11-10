@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebUI", "WebUI\WebUI.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFFCK", "EFFCK\EFFCK.csproj", "{7DA2EFA7-8D88-4C50-BA3C-8EEA7321062F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogFile", "LogFile\LogFile.csproj", "{2AE0080B-7E15-4C79-842C-35E52FC945FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{7DA2EFA7-8D88-4C50-BA3C-8EEA7321062F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7DA2EFA7-8D88-4C50-BA3C-8EEA7321062F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7DA2EFA7-8D88-4C50-BA3C-8EEA7321062F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AE0080B-7E15-4C79-842C-35E52FC945FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AE0080B-7E15-4C79-842C-35E52FC945FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AE0080B-7E15-4C79-842C-35E52FC945FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AE0080B-7E15-4C79-842C-35E52FC945FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

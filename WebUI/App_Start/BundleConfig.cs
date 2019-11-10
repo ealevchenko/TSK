@@ -22,6 +22,20 @@ namespace WebUI
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
+
+            //jquery-ui
+            bundles.Add(new ScriptBundle("~/bundles/jquery-ui").Include(
+                    "~/Scripts/jquery-ui-{version}.min.js",
+                    "~/Scripts/datepicker-ru.js"//,
+                    //"~/Scripts/datepicker-en-GB.js"
+                    ));
+
+
+            bundles.Add(new StyleBundle("~/jquery-ui/css").Include(
+                "~/Content/themes/base/jquery-ui.css",
+                "~/Content/themes/base/jquery-ui.structure.css",
+                "~/Content/themes/base/jquery-ui.theme.css"));
+
         }
     }
 }
