@@ -23,6 +23,9 @@ namespace EFFCK.Concrete
         public virtual DbSet<RemainsTanksRW> RemainsTanksRW { get; set; }
         public virtual DbSet<UsersChanges> UsersChanges { get; set; }
 
+        public virtual DbSet<FuelSale> FuelSale { get; set; }
+        public virtual DbSet<Settings> Settings { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FuelSaleRW>()

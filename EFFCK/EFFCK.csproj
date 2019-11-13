@@ -50,7 +50,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abstract\ISettings.cs" />
     <Compile Include="Abstract\IRepository.cs" />
+    <Compile Include="Concrete\EFFuelSale.cs" />
+    <Compile Include="Concrete\EFSettings.cs" />
     <Compile Include="Concrete\EFUsersChanges.cs" />
     <Compile Include="Concrete\EFDaily_ReportRW.cs" />
     <Compile Include="Concrete\EFRemainsTanksRW.cs" />
@@ -67,6 +70,8 @@
     <Compile Include="Entities\Remains.cs" />
     <Compile Include="Entities\RemainsTanksRW.cs" />
     <Compile Include="Entities\UsersChanges.cs" />
+    <Compile Include="Entities\FuelSale.cs" />
+    <Compile Include="Entities\Settings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

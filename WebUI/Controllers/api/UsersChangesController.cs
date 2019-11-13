@@ -1,5 +1,6 @@
 ﻿using EFFCK.Abstract;
 using EFFCK.Entities;
+using MessageLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,7 @@ namespace WebUI.Controllers.api
             }
             catch (Exception e)
             {
+                String.Format("Ошибка выполнения метода API:GetUsersChanges()").SaveError(e);
                 return NotFound();
             }
         }
@@ -56,6 +58,7 @@ namespace WebUI.Controllers.api
             }
             catch (Exception e)
             {
+                String.Format("Ошибка выполнения метода API:GetLastUsersChanges()").SaveError(e);
                 return NotFound();
             }
         }

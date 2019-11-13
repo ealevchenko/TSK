@@ -69,6 +69,8 @@ namespace WebUI.App_Start
         private static void RegisterServices(IKernel kernel)
         {
             kernel.Bind<EFFCK.Abstract.IRepository<EFFCK.Entities.UsersChanges>>().To<EFFCK.Concrete.EFUsersChanges>();
+            kernel.Bind<EFFCK.Abstract.IRepository<EFFCK.Entities.FuelSale>>().To<EFFCK.Concrete.EFFuelSale>();
+            kernel.Bind<EFFCK.Abstract.ISettings>().To<EFFCK.Concrete.EFSettings>();
         }        
     }
 }
