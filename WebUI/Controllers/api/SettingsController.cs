@@ -32,7 +32,15 @@ namespace WebUI.Controllers.api
                 Settings setting = this.ef_sett.Get("display_fd");
                 if (setting == null)
                 {
-                    return NotFound();
+                    setting = new Settings
+                    {
+                        key = "display_fd",
+                        value = "0"
+                    };
+                    this.ef_sett.Add(setting);
+                    this.ef_sett.Save();
+                    this.ef_sett.Refresh(setting);
+                    return Ok(int.Parse(setting.value));
                 }
                 return Ok(int.Parse(setting.value));
             }
@@ -59,6 +67,37 @@ namespace WebUI.Controllers.api
             {
                 String.Format("Ошибка выполнения метода API:PostSettingDisplay_fd(value={0})", value).SaveError(e);
                 return "-1";
+            }
+        }
+
+        // PUT api/tsk/setting/display_fd/5
+        [HttpPut]
+        [Route("display_fd/{value:int}")]
+        public int PutSettingDisplay_fd(int value)
+        {
+            try
+            {
+                Settings setting = this.ef_sett.Get("display_fd");
+                if (setting == null)
+                {
+                    setting = new Settings
+                    {
+                        key = "display_fd",
+                        value = value.ToString()
+                    };
+                    this.ef_sett.Add(setting);
+                }
+                else
+                {
+                    setting.value = value.ToString();
+                    this.ef_sett.Update(setting);
+                }
+                return this.ef_sett.Save();
+            }
+            catch (Exception e)
+            {
+                String.Format("Ошибка выполнения метода API:PutFuelSale(value={0})", value).SaveError(e);
+                return -1;
             }
         }
     }

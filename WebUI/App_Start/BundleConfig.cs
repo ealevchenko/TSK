@@ -25,7 +25,7 @@ namespace WebUI
 
             //jquery-ui
             bundles.Add(new ScriptBundle("~/bundles/jquery-ui").Include(
-                    "~/Scripts/jquery-ui-{version}.min.js",
+                    "~/Scripts/jquery-ui-1.12.1.min.js",
                     "~/Scripts/datepicker-ru.js"//,
                     //"~/Scripts/datepicker-en-GB.js"
                     ));
