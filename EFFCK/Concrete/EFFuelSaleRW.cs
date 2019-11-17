@@ -49,6 +49,18 @@ namespace EFFCK.Concrete
             }
         }
 
+        public FuelSaleRW Get(string id)
+        {
+            try
+            {
+                return db.Select<FuelSaleRW>(id);
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public void Add(FuelSaleRW item)
         {
             try

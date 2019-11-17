@@ -12,6 +12,9 @@ namespace EFFCK.Abstract
         Database Database { get; }
         IEnumerable<T> Get();       // получение всех объектов
         T Get(int id);              // получение одного объекта по id
+
+        T Get(string id);              // получение одного объекта по id
+
         void Add(T item);           // создание объекта
         void Update(T item);        // обновление объекта
         void AddOrUpdate(T item);   // добавить или обновить

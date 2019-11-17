@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace EFFCK.Concrete
 {
-    public class EFReceivingFuelRW : IRepository<ReceivingFuelRW>
+    public class EFCat_Werks : IRepository<Cat_Werks>
     {
 
         private EFDbContext db;
 
-        public EFReceivingFuelRW(EFDbContext db)
+        public EFCat_Werks(EFDbContext db)
         {
 
             this.db = db;
@@ -25,11 +25,11 @@ namespace EFFCK.Concrete
             get { return this.db.Database; }
         }
 
-        public IEnumerable<ReceivingFuelRW> Get()
+        public IEnumerable<Cat_Werks> Get()
         {
             try
             {
-                return db.Select<ReceivingFuelRW>();
+                return db.Select<Cat_Werks>();
             }
             catch (Exception e)
             {
@@ -37,11 +37,11 @@ namespace EFFCK.Concrete
             }
         }
 
-        public ReceivingFuelRW Get(int id)
+        public Cat_Werks Get(int id)
         {
             try
             {
-                return db.Select<ReceivingFuelRW>(id);
+                return db.Select<Cat_Werks>(id);
             }
             catch (Exception e)
             {
@@ -49,22 +49,23 @@ namespace EFFCK.Concrete
             }
         }
 
-        public ReceivingFuelRW Get(string id)
+        public Cat_Werks Get(string id)
         {
             try
             {
-                return db.Select<ReceivingFuelRW>(id);
+                return db.Select<Cat_Werks>(id);
             }
             catch (Exception e)
             {
                 return null;
             }
         }
-        public void Add(ReceivingFuelRW item)
+
+        public void Add(Cat_Werks item)
         {
             try
             {
-                db.Insert<ReceivingFuelRW>(item);
+                db.Insert<Cat_Werks>(item);
             }
             catch (Exception e)
             {
@@ -72,11 +73,11 @@ namespace EFFCK.Concrete
             }
         }
 
-        public void Update(ReceivingFuelRW item)
+        public void Update(Cat_Werks item)
         {
             try
             {
-                db.Update<ReceivingFuelRW>(item);
+                db.Update<Cat_Werks>(item);
             }
             catch (Exception e)
             {
@@ -84,11 +85,11 @@ namespace EFFCK.Concrete
             }
         }
 
-        public void AddOrUpdate(ReceivingFuelRW item)
+        public void AddOrUpdate(Cat_Werks item)
         {
             try
             {
-                ReceivingFuelRW dbEntry = db.ReceivingFuelRW.Find(item.id);
+                Cat_Werks dbEntry = db.Cat_Werks.Find(item.id);
                 if (dbEntry == null)
                 {
                     Add(item);
@@ -109,7 +110,7 @@ namespace EFFCK.Concrete
         {
             try
             {
-                ReceivingFuelRW item = db.Delete<ReceivingFuelRW>(id);
+                Cat_Werks item = db.Delete<Cat_Werks>(id);
             }
             catch (Exception e)
             {
@@ -129,12 +130,12 @@ namespace EFFCK.Concrete
             }
         }
 
-        public ReceivingFuelRW Refresh(ReceivingFuelRW item)
+        public Cat_Werks Refresh(Cat_Werks item)
         {
             try
             {
                 db.Entry(item).State = EntityState.Detached;
-                return db.Select<ReceivingFuelRW>(item.id);
+                return db.Select<Cat_Werks>(item.id);
             }
             catch (Exception e)
             {

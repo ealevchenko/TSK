@@ -52,6 +52,9 @@
   <ItemGroup>
     <Compile Include="Abstract\ISettings.cs" />
     <Compile Include="Abstract\IRepository.cs" />
+    <Compile Include="Concrete\EFCat_Werks.cs" />
+    <Compile Include="Concrete\EFCat_OZM_GSM.cs" />
+    <Compile Include="Concrete\EFCat_Depots.cs" />
     <Compile Include="Concrete\EFFuelSale.cs" />
     <Compile Include="Concrete\EFSettings.cs" />
     <Compile Include="Concrete\EFUsersChanges.cs" />
@@ -72,6 +75,9 @@
     <Compile Include="Entities\UsersChanges.cs" />
     <Compile Include="Entities\FuelSale.cs" />
     <Compile Include="Entities\Settings.cs" />
+    <Compile Include="Entities\Cat_Depots.cs" />
+    <Compile Include="Entities\Cat_OZM_GSM.cs" />
+    <Compile Include="Entities\Cat_Werks.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

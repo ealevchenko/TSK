@@ -49,6 +49,18 @@ namespace EFFCK.Concrete
             }
         }
 
+        public Daily_ReportRW Get(string id)
+        {
+            try
+            {
+                return db.Select<Daily_ReportRW>(id);
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public void Add(Daily_ReportRW item)
         {
             try

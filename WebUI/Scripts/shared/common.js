@@ -51,7 +51,7 @@ var initSelect = function (obj_select, property, data, callback_option, value_se
         icons: { button: "ui-icon ui-icon-circle-triangle-s" },
         width: property.width,
         change: event_change,
-    }).selectmenu("menuWidget").addClass("overflow");;
+    }).selectmenu("menuWidget").addClass("overflow");
     // Заполним селект 
     obj_select.append(options.join(""))
         .val(value_select)

@@ -49,6 +49,18 @@ namespace EFFCK.Concrete
             }
         }
 
+        public RemainsTanksRW Get(string id)
+        {
+            try
+            {
+                return db.Select<RemainsTanksRW>(id);
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public void Add(RemainsTanksRW item)
         {
             try

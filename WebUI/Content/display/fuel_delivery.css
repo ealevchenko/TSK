@@ -33,6 +33,8 @@ label {
 
 div#content {
     width: 700px;
+    border: 1px solid #808080;
+    padding:5px;
 }
 
 .table-display {
@@ -53,7 +55,59 @@ div#content {
     width:95%;
 }
 
+.overflow {
+    height: 200px;
+}
+
+/*Блокировка экрана*/
+.LockOff {
+    display: none;
+    visibility: hidden;
+}
+
+.LockOn {
+    display: block;
+    visibility: visible;
+    position: absolute;
+    z-index: 999;
+    top: 0px;
+    left: 0px;
+    width: 105%;
+    height: 1000%;
+    background-color: #ccc;
+    text-align: center;
+    padding-top: 20%;
+    filter: alpha(opacity=75);
+    opacity: 0.75;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: xx-large;
+    color: #0033CC;
+}
+
+.left-panel {
+    width:240px;
+    float:left; 
+    border: 1px solid #808080;
+}
+
+.right-panel {
+    margin-left: 245px;
+    width: 440px;
+    border: 1px solid #808080;
+}
+
 .button-panel {
-    text-align:center;
-    padding:5px;
+    margin-top: 5px;
+    border: 1px solid #808080;
+    clear: left;
+    text-align: right;
+    padding: 5px;
+}
+
+.input-edit {
+    background-color: #e3efc5;
+}
+
+.input-view {
+    background-color: #eeeaea;
 }

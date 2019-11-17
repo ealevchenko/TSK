@@ -49,6 +49,18 @@ namespace EFFCK.Concrete
             }
         }
 
+        public UsersChanges Get(string id)
+        {
+            try
+            {
+                return db.Select<UsersChanges>(id);
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public void Add(UsersChanges item)
         {
             try

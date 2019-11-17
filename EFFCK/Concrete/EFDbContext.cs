@@ -26,8 +26,18 @@ namespace EFFCK.Concrete
         public virtual DbSet<FuelSale> FuelSale { get; set; }
         public virtual DbSet<Settings> Settings { get; set; }
 
+        public virtual DbSet<Cat_Depots> Cat_Depots { get; set; }
+        public virtual DbSet<Cat_OZM_GSM> Cat_OZM_GSM { get; set; }
+        public virtual DbSet<Cat_Werks> Cat_Werks { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Cat_Werks>()
+                .HasMany(e => e.Cat_Depots)
+                .WithRequired(e => e.Cat_Werks)
+                .HasForeignKey(e => e.parent_id)
+                .WillCascadeOnDelete(false);
+
             modelBuilder.Entity<FuelSaleRW>()
                 .Property(e => e.dose)
                 .HasPrecision(9, 3);
