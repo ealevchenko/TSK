@@ -207,6 +207,18 @@ TSK_API.prototype.getCat_Depots = function (callback) {
         },
     });
 };
+// Вернуть значение строку "Catalog Depots" по ID
+TSK_API.prototype.getCat_DepotsOfID = function (id) {
+    if (this.list_catalog_depots !== null) {
+        var depots = getObjects(this.list_catalog_depots, 'id', id);
+        if (depots !== null && depots.length > 0) {
+            return depots[0];
+        }
+        return null;
+    }
+
+};
+
 // Вернуть значение "Catalog Werks"
 TSK_API.prototype.getCat_Werks = function (callback) {
     $.ajax({

@@ -1,4 +1,8 @@
-﻿//------------------------------------------------------------------------
+﻿//=========== ПЕРЕМЕННЫЕ ДЛЯ ТЕСТОВ ====================================================
+// TODO:!!!ТЕСТ УБРАТЬ
+var run_mode = Number(mode_run);
+
+//------------------------------------------------------------------------
 // Определение параметров переданных по url
 $.extend({
     getUrlVars: function () {
@@ -117,7 +121,7 @@ var getObjOflist = function (list, field, value) {
 // Событие перед запросом
 var AJAXBeforeSend = function () {
     //OnBegin();
-}
+};
 // Обработка ошибок
 var OnAJAXError = function (x, y, z) {
     //LockScreenOff();
@@ -129,6 +133,10 @@ var OnAJAXError = function (x, y, z) {
 // Событие после выполнения
 var AJAXComplete = function () {
     //LockScreenOff();
+};
+// Обработка ошибок
+var OnAJAXErrorOfMessage = function (message) {
+    updateTips(message);
 };
 
 // Коррекция вывода даты с учетом зоны

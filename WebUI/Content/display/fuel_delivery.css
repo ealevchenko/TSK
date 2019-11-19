@@ -88,6 +88,7 @@ div#content {
     width:240px;
     float:left; 
     border: 1px solid #808080;
+    height:auto;
 }
 
 .right-panel {

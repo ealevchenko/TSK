@@ -9,10 +9,17 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jquery-ui")
 
+
+    <script>
+        var mode_run = '@System.Configuration.ConfigurationManager.AppSettings["ModeRun"]';
+    </script>
+
     <script src="~/Scripts/shared/common.js" type="text/javascript"></script>
     <script src="~/Scripts/shared/log_api.js" type="text/javascript"></script>
     <script src="~/Scripts/shared/tsk_api.js" type="text/javascript"></script>
+    <script src="~/Scripts/shared/sap_api.js" type="text/javascript"></script>
     <script src="~/Scripts/display/fuel_delivery.js" type="text/javascript"></script>
+
 
 </head>
 <body>
@@ -20,175 +27,180 @@
     <input id="username" type="hidden" value="@System.Environment.UserName" />
     <input id="hostname" type="hidden" value="@System.Environment.MachineName" />
     <div id="content">
+        
         @*<form id="form-fuel-delivery">*@
-            <fieldset>
-                <legend id="title-fuel-delivery" class="panel-title"></legend>
-                <div class="left-panel">
-                    <fieldset>
-                        <legend>RFID-карта</legend>
-                        <table class="table-display">
-                            <tr>
-                                <th class="title-field">Номер карты :</th>
-                                <td><input id="num-card" name="num-card" type="text" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all" /></td>
-                            </tr>
-                            <tr>
-                                <th class="title-field">Номер транспортного средства :</th>
-                                <td><input id="num-car" name="num-car" type="text" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all" /></td>
-                            </tr>
-                            <tr>
-                                <th class="title-field">Дебитор :</th>
-                                <td><input id="debitor" name="debitor" type="text" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all" /></td>
-                            </tr>
-                            <tr>
-                                <th class="title-field" id="fio-title"></th>
-                                <td><input id="fio" name="fio" type="text" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all" /></td>
-                            </tr>
-                        </table>
-                    </fieldset>
-                    <fieldset>
-                        <legend>Доза</legend>
-                        <table class="table-display">
-                            <tr>
-                                <th class="title-field">Объем, л :</th>
-                                <td><input id="volume" name="volume" type="text" class="confirm-input ui-widget-content ui-corner-all" /></td>
-                            </tr>
-                            <tr>
-                                <th class="title-field">Плотность, кг/м3 :</th>
-                                <td><input id="dens" name="dens" type="text" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all" /></td>
-                            </tr>
-                            <tr>
-                                <th class="title-field">Масса, кг :</th>
-                                <td><input id="mass" name="mass" type="text" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all" /></td>
-                            </tr>
-                            <tr>
-                                <th>Технический пролив :</th>
-                                <td><input id="deliver" type="checkbox" class="confirm-input ui-widget-content ui-corner-all" /></td>
-                            </tr>
-                        </table>
-                    </fieldset>
+        <fieldset>
+            <legend id="title-fuel-delivery" class="panel-title"></legend>
+            <div class="left-panel">
+                <fieldset>
+                    <legend>RFID-карта</legend>
+                    <table class="table-display">
+                        <tr>
+                            <th class="title-field">Номер карты :</th>
+                            <td><input id="num-card" name="num-card" type="text" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all" /></td>
+                        </tr>
+                        <tr>
+                            <th class="title-field">Номер транспортного средства :</th>
+                            <td><input id="num-car" name="num-car" type="text" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all" /></td>
+                        </tr>
+                        <tr>
+                            <th class="title-field">Дебитор :</th>
+                            <td><input id="debitor" name="debitor" type="text" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all" /></td>
+                        </tr>
+                        <tr>
+                            <th class="title-field" id="fio-title"></th>
+                            <td><input id="fio" name="fio" type="text" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all" /></td>
+                        </tr>
+                    </table>
+                </fieldset>
+                <fieldset>
+                    <legend>Доза</legend>
+                    <table class="table-display">
+                        <tr>
+                            <th class="title-field">Объем, л :</th>
+                            <td><input id="volume" name="volume" type="text" class="confirm-input ui-widget-content ui-corner-all" /></td>
+                        </tr>
+                        <tr>
+                            <th class="title-field">Плотность, кг/м3 :</th>
+                            <td><input id="dens" name="dens" type="text" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all" /></td>
+                        </tr>
+                        <tr>
+                            <th class="title-field">Масса, кг :</th>
+                            <td><input id="mass" name="mass" type="text" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all" /></td>
+                        </tr>
+                        <tr>
+                            <th>Технический пролив :</th>
+                            <td><input id="deliver" type="checkbox" class="confirm-input ui-widget-content ui-corner-all" /></td>
+                        </tr>
+                    </table>
+                </fieldset>
+                <fieldset>
+                    <legend>Сообщения:</legend>
                     <p class="validateTips"></p>
-                </div>
-                <div class="right-panel">
+                </fieldset>
+
+            </div>
+            <div class="right-panel">
+                <fieldset>
+                    <legend>САП</legend>
+                    Вариант выдачи:<select id="variant-sap" name="variant-sap" class="ui-widget-content ui-corner-all"></select>
                     <fieldset>
-                        <legend>САП</legend>
-                        Вариант выдачи:<select id="variant-sap" name="variant-sap" class="ui-widget-content ui-corner-all"></select>
-                        <fieldset>
-                            <legend>Ручной ввод</legend>
-                            <table class="table-display">
-                                <tr id="button-sap">
-                                    <td colspan="2">
-                                        <button id="button-sap-debitor" class="ui-button ui-widget ui-corner-all">По объему, массе и дебитору</button>
-                                        <button id="button-sap-ndopusk" class="ui-button ui-widget ui-corner-all">По наряд-допуску</button>
-                                        <button id="button-sap" class="ui-button ui-widget ui-corner-all">По номеру и поз.</button>
-                                    </td>
-                                </tr>
-                                <tr id="sap-num">
-                                    <th class="title-field" id="label-sap-num">
+                        <legend>Ручной ввод</legend>
+                        <table class="table-display">
+                            <tr id="button-sap">
+                                <td colspan="2">
+                                    <button id="button-sap-debitor" class="ui-button ui-widget ui-corner-all">По объему, массе и дебитору</button>
+                                    <button id="button-sap-ndopusk" class="ui-button ui-widget ui-corner-all">По наряд-допуску</button>
+                                    <button id="button-sap" class="ui-button ui-widget ui-corner-all">По номеру и поз.</button>
+                                </td>
+                            </tr>
+                            <tr id="sap-num">
+                                <th class="title-field" id="label-sap-num">
 
-                                    </th>
-                                    <td>
-                                        <input id="sap-num" name="sap-num" type="number" class="confirm-input ui-widget-content ui-corner-all" />
-                                    </td>
-                                </tr>
-                                <tr id="sap-num-pos">
-                                    <th id="label-sap-num-pos">
+                                </th>
+                                <td>
+                                    <input id="sap-num" name="sap-num" type="number" class="confirm-input ui-widget-content ui-corner-all" />
+                                </td>
+                            </tr>
+                            <tr id="sap-num-pos">
+                                <th id="label-sap-num-pos">
 
-                                    </th>
-                                    <td>
-                                        <input id="sap-num-pos" name="sap-num-pos" type="number" class="confirm-input ui-widget-content ui-corner-all" />
-                                        <select id="sap-num-pos" name="sap-num-pos" class="ui-widget-content ui-corner-all"></select>
-                                        <select id="sap-num-pos-reserv" name="sap-num-pos-reserv" class="ui-widget-content ui-corner-all"></select>
-                                    </td>
-                                </tr>
-                                <tr id="sap-num-ts" class="line">
-                                    <th id="label-sap-num-ts">
+                                </th>
+                                <td>
+                                    <input id="sap-num-pos" name="sap-num-pos" type="number" class="confirm-input ui-widget-content ui-corner-all" />
+                                    <select id="sap-num-pos" name="sap-num-pos" class="ui-widget-content ui-corner-all"></select>
+                                    <select id="sap-num-pos-reserv" name="sap-num-pos-reserv" class="ui-widget-content ui-corner-all"></select>
+                                </td>
+                            </tr>
+                            <tr id="sap-num-ts" class="line">
+                                <th id="label-sap-num-ts">
 
-                                    </th>
-                                    <td>
-                                        <input id="sap-num-ts" name="sap-num-ts" type="text" class="confirm-input ui-widget-content ui-corner-all" />
-                                    </td>
-                                </tr>
-                                <tr id="sap-num-kpp">
-                                    <th id="label-sap-num-kpp">
+                                </th>
+                                <td>
+                                    <input id="sap-num-ts" name="sap-num-ts" type="text" class="confirm-input ui-widget-content ui-corner-all" />
+                                </td>
+                            </tr>
+                            <tr id="sap-num-kpp">
+                                <th id="label-sap-num-kpp">
 
-                                    </th>
-                                    <td>
-                                        <input id="sap-num-kpp" name="sap-num-kpp" type="text" class="confirm-input ui-widget-content ui-corner-all" />
-                                    </td>
-                                </tr>
-                                <tr id="sap-name-forwarder">
-                                    <th id="label-sap-name-forwarder">
+                                </th>
+                                <td>
+                                    <input id="sap-num-kpp" name="sap-num-kpp" type="text" class="confirm-input ui-widget-content ui-corner-all" />
+                                </td>
+                            </tr>
+                            <tr id="sap-name-forwarder">
+                                <th id="label-sap-name-forwarder">
 
-                                    </th>
-                                    <td>
-                                        <input id="sap-name-forwarder" name="sap-name-forwarder" type="text" class="confirm-input ui-widget-content ui-corner-all" />
-                                    </td>
-                                </tr>
-                            </table>
-                        </fieldset>
-                        <fieldset>
-                            <legend>Справочные данные САП(АСУ)</legend>
-                            <table class="table-display">
-                                <tr id="sap-ozm">
-                                    <th id="label-sap-ozm">
-
-                                    </th>
-                                    <td>
-                                        <input id="sap-ozm" name="sap-ozm" type="text" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all" />
-                                        <select id="sap-ozm" name="sap-ozm" class="ui-widget-content ui-corner-all"></select>
-                                    </td>
-                                </tr>
-                                <tr id="sap-ozm-bak">
-                                    <th id="label-sap-ozm-bak">
-
-                                    </th>
-                                    <td>
-                                        <textarea id="sap-ozm-bak" rows="2" name="sap-ozm-bak" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all"></textarea>
-                                    </td>
-                                </tr>
-                                <tr id="sap-ozm-amount">
-                                    <th id="label-sap-ozm-amount">
-
-                                    </th>
-                                    <td>
-                                        <input id="sap-ozm-amount" name="sap-ozm-amount" type="number" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all" />
-                                    </td>
-                                </tr>
-                                <tr id="sap-stock-recipient">
-                                    <th id="label-sap-stock-recipient">
-
-                                    </th>
-                                    <td>
-                                        <textarea id="sap-stock-recipient" rows="2" name="sap-stock-recipient" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all"></textarea>
-                                        <select id="sap-stock-recipient" name="sap-stock-recipient" class="ui-widget-content ui-corner-all"></select>
-                                    </td>
-                                </tr>
-                                <tr id="sap-factory-recipient">
-                                    <th id="label-sap-factory-recipient">
-
-                                    </th>
-                                    <td>
-                                        <input id="sap-factory-recipient" name="sap-factory-recipient" type="text" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all" />
-                                        <select id="sap-factory-recipient" name="sap-factory-recipient" class="ui-widget-content ui-corner-all"></select>
-                                    </td>
-                                </tr>
-                                <tr id="sap-id-card">
-                                    <th id="label-sap-id-card">
-
-                                    </th>
-                                    <td>
-                                        <input id="sap-id-card" name="sap-id-card" type="text" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all" />
-                                    </td>
-                                </tr>
-                            </table>
-                        </fieldset>
+                                </th>
+                                <td>
+                                    <input id="sap-name-forwarder" name="sap-name-forwarder" type="text" class="confirm-input ui-widget-content ui-corner-all" />
+                                </td>
+                            </tr>
+                        </table>
                     </fieldset>
-                </div>
-                <div class="button-panel">
-                    <button id="button-ok" class="ui-button ui-widget ui-corner-all">Ок</button>
-                    <button id="button-cancel" class="ui-button ui-widget ui-corner-all">Отмена</button>
-                </div>
-            </fieldset>
+                    <fieldset>
+                        <legend>Справочные данные САП(АСУ)</legend>
+                        <table class="table-display">
+                            <tr id="sap-ozm">
+                                <th id="label-sap-ozm">
+
+                                </th>
+                                <td>
+                                    <input id="sap-ozm" name="sap-ozm" type="text" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all" />
+                                    <select id="sap-ozm" name="sap-ozm" class="ui-widget-content ui-corner-all"></select>
+                                </td>
+                            </tr>
+                            <tr id="sap-ozm-bak">
+                                <th id="label-sap-ozm-bak">
+
+                                </th>
+                                <td>
+                                    <textarea id="sap-ozm-bak" rows="2" name="sap-ozm-bak" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all"></textarea>
+                                </td>
+                            </tr>
+                            <tr id="sap-ozm-amount">
+                                <th id="label-sap-ozm-amount">
+
+                                </th>
+                                <td>
+                                    <input id="sap-ozm-amount" name="sap-ozm-amount" type="number" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all" />
+                                </td>
+                            </tr>
+                            <tr id="sap-stock-recipient">
+                                <th id="label-sap-stock-recipient">
+
+                                </th>
+                                <td>
+                                    <textarea id="sap-stock-recipient" rows="2" name="sap-stock-recipient" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all"></textarea>
+                                    <select id="sap-stock-recipient" name="sap-stock-recipient" class="ui-widget-content ui-corner-all"></select>
+                                </td>
+                            </tr>
+                            <tr id="sap-factory-recipient">
+                                <th id="label-sap-factory-recipient">
+
+                                </th>
+                                <td>
+                                    <input id="sap-factory-recipient" name="sap-factory-recipient" type="text" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all" />
+                                    <select id="sap-factory-recipient" name="sap-factory-recipient" class="ui-widget-content ui-corner-all"></select>
+                                </td>
+                            </tr>
+                            <tr id="sap-id-card">
+                                <th id="label-sap-id-card">
+
+                                </th>
+                                <td>
+                                    <input id="sap-id-card" name="sap-id-card" type="text" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all" />
+                                </td>
+                            </tr>
+                        </table>
+                    </fieldset>
+                </fieldset>
+            </div>
+            <div class="button-panel">
+                <button id="button-ok" class="ui-button ui-widget ui-corner-all">Ок</button>
+                <button id="button-cancel" class="ui-button ui-widget ui-corner-all">Отмена</button>
+            </div>
+        </fieldset>
         @*</form>*@
     </div>
 </body>
