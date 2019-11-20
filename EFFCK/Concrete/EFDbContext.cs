@@ -30,6 +30,8 @@ namespace EFFCK.Concrete
         public virtual DbSet<Cat_OZM_GSM> Cat_OZM_GSM { get; set; }
         public virtual DbSet<Cat_Werks> Cat_Werks { get; set; }
 
+        public virtual DbSet<Logs> Logs { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Cat_Werks>()

@@ -10,6 +10,7 @@ using MessageLog;
 
 namespace WebUI.Controllers.api
 {
+    [RoutePrefix("api/sap")]
     public class SAPController : ApiController
     {
         ClientSAP sap = new ClientSAP();
@@ -27,6 +28,66 @@ namespace WebUI.Controllers.api
             try
             {
                 Reservation reservation = sap.GetReservationOfValumeMassDebitor(valume, mass, debitor, ozm, mode);
+                if (reservation == null)
+                {
+                    return NotFound();
+                }
+                return Ok(reservation);
+            }
+            catch (Exception e)
+            {
+                return NotFound();
+            }
+        }
+
+        // GET: api/sap/supply/post/8000000020
+        [Route("supply/post/{post}")]
+        [ResponseType(typeof(Supply))]
+        public IHttpActionResult GetSupply(string post)
+        {
+            try
+            {
+                List<Supply> list_sypply = sap.GetSupply(post);
+                if (list_sypply == null)
+                {
+                    return NotFound();
+                }
+                return Ok(list_sypply);
+            }
+            catch (Exception e)
+            {
+                return NotFound();
+            }
+        }
+
+        // GET: api/sap/reservation_matrn/num/4364606/matrn/000000000107000024/mode/2
+        [Route("reservation_matrn/num/{num}/matrn/{matrn}/mode/{mode}")]
+        [ResponseType(typeof(Reservation))]
+        public IHttpActionResult GetReservationMatrn(string num, string matrn, string mode)
+        {
+            try
+            {
+                List<Reservation> reservation = sap.GetReservationMatrn(num, matrn, mode);
+                if (reservation == null)
+                {
+                    return NotFound();
+                }
+                return Ok(reservation);
+            }
+            catch (Exception e)
+            {
+                return NotFound();
+            }
+        }
+
+        // GET: api/sap/reservation/num_dopusk/435/mode/5
+        [Route("reservation/num_dopusk/{num}/mode/{mode}")]
+        [ResponseType(typeof(Reservation))]
+        public IHttpActionResult GetReservationOfNDopusk(string num, string mode)
+        {
+            try
+            {
+                Reservation reservation = sap.GetReservationOfNDopusk(num, mode);
                 if (reservation == null)
                 {
                     return NotFound();

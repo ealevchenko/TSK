@@ -5,31 +5,34 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using EFFCK.Abstract;
+using EFFCK.Entities;
 
 namespace WebUI.Controllers.api
 {
-    public class TSKLog
-    {
-        public long ID { get; set; }
-        public DateTime DateTime { get; set; }
-        public string UserName { get; set; }
-        public int? Level { get; set; }
-        public string Log { get; set; }
-    }
+    //public class TSKLog
+    //{
+    //    public long ID { get; set; }
+    //    public DateTime DateTime { get; set; }
+    //    public string UserName { get; set; }
+    //    public int? Level { get; set; }
+    //    public string Log { get; set; }
+    //}
 
     [RoutePrefix("api/log")]
     public class LogController : ApiController
     {
+        protected ILogs ef_logs;
 
-        public LogController()
+        public LogController(ILogs logs)
         {
-
+            this.ef_logs = logs;
         }
 
         // POST api/log/add
         [HttpPost]
         [Route("add")]
-        public long PostLog([FromBody]TSKLog value)
+        public long PostLog([FromBody]Logs value)
         {
             try
             {
@@ -42,11 +45,11 @@ namespace WebUI.Controllers.api
                     case 3: mess.SaveDebug(); break;
                     case 4: mess.SaveInformation(); break;
                 }
-                return 1;
+                return this.ef_logs.AddLogs(value); ;
             }
             catch (Exception e)
             {
-                String.Format("Ошибка выполнения метода API:PostTRKLogs(value={0})", value).SaveError(e);
+                String.Format("Ошибка выполнения метода API:PostLog(value={0})", value).SaveError(e);
                 return -1;
             }
         }

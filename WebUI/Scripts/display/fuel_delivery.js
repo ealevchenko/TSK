@@ -9,6 +9,8 @@ $(function () {
         sap = new SAP_API(),
         user_tsk = null,
         card = null,
+        supply = null,  // резерврование 3 режим
+        reserv = null,  // резерврование 2 режим
         //=======================================================================
         // поля
         //=======================================================================
@@ -37,6 +39,7 @@ $(function () {
         sap_num_tr = null,
         label_sap_num = null,
         sap_num = null,
+        sap_ndopusk = null,
 
         sap_num_pos_tr = null,
         label_sap_num_pos = null,
@@ -226,14 +229,16 @@ $(function () {
                 default:
                     break;
             }
-            log.logInfo(user_tsk !== null ? user_tsk.UserName : '?', 'Панель оператора "' + title + '" - ОТКРЫТА');
+
+            if (blog) { log.logInfo(user_tsk !== null ? user_tsk.UserName : '?', 'Панель оператора "' + title + '" - ОТКРЫТА'); }
+
             button_ok = $('button#button-ok').on('click', function () {
                 event.preventDefault();
                 LockScreen('Идет проверка...');
 
                 tsk.putSettingDisplay_fd(0,
                     function (result) {
-                        log.logInfo(user_tsk !== null ? user_tsk.UserName : '?', 'Панель оператора "' + title + '" - Нажата кнопка [Ок]');
+                        if (blog) { log.logInfo(user_tsk !== null ? user_tsk.UserName : '?', 'Панель оператора "' + title + '" - Нажата кнопка [Ок]'); }
                     });
             });
             button_cancel = $('button#button-cancel').on('click', function () {
@@ -241,10 +246,10 @@ $(function () {
                 LockScreen('Форма закрывается...');
                 tsk.putSettingDisplay_fd(0,
                     function (result) {
-                        log.logInfo(user_tsk !== null ? user_tsk.UserName : '?', 'Панель оператора "' + title + '" - Нажата кнопка [Cancel]');
+                        if (blog) { log.logInfo(user_tsk !== null ? user_tsk.UserName : '?', 'Панель оператора "' + title + '" - Нажата кнопка [Cancel]'); }
                     });
             });
-
+            // Установим признак открытого окна
             tsk.putSettingDisplay_fd(num_trk,
                 function (result) {
                     // -----------------------------------------------------------------
@@ -290,12 +295,17 @@ $(function () {
                         -1,
                         function (event, ui) {
                             event.preventDefault();
+                            if (blog) {
+                                log.logInfo(user_tsk !== null ? user_tsk.UserName : '?',
+                                    'Выбран режим : ' + ui.item.value + ' - ' + ui.item.label);
+                            }
                             viewVariant(ui.item.value);
                         },
                         null
                     );
 
                     button_sap_tr = $('tr#button-sap');
+                    // По объему, массе и дебитору
                     button_sap_debitor = $('button#button-sap-debitor').on('click', function () {
                         $(".validateTips").text('');
                         $(".ui-state-error").removeClass("ui-state-error");
@@ -315,15 +325,13 @@ $(function () {
                             sap_stock_recipient.val('');
                             sap_factory_recipient.val('');
                             switch (i) {
-                                case "2":
                                 case "5":
-                                case "6":
                                     // По резервированию
                                     var val = volume.val();
                                     var mas = mass.val();
                                     var debitor = card !== null ? card.Debitor : null;
                                     var ozm = '107000024';
-
+                                    // Запрос в САП по объему, массе и дебитору
                                     sap.getReservationOfVolumeMassDebitor(
                                         val,
                                         mas,
@@ -331,11 +339,14 @@ $(function () {
                                         ozm,
                                         i,
                                         function (result) {
-                                            // TODO:!!!ТЕСТ УБРАТЬ
-                                            //if (log) {
-                                            //    log.info('Сформировали строку getReservationOfDebitor - > result');
-                                            //    log.debug(result);
-                                            //}
+                                            if (blog) {
+                                                result_str = '';
+                                                for (var key in result) {
+                                                    result_str += "[" + key + ":" + result[key] + "], ";
+                                                }
+                                                log.logInfo(user_tsk !== null ? user_tsk.UserName : '?',
+                                                    'Получен ответ на запрос в САП (по объему, массе и дебитору) Метод: [getReservationOfVolumeMassDebitor(val=' + val + ',mas=' + mas + ',debitor=' + debitor + ',ozm=' + ozm + ',i=' + i + ')] Ответ: ' + result_str);
+                                            }
                                             if (result.message !== undefined) {
                                                 updateTips(result.message);
                                             } else {
@@ -362,11 +373,158 @@ $(function () {
                             }
                         }
                     });
+                    // По наряд-допуску
                     button_sap_ndopusk = $('button#button-sap-ndopusk').on('click', function () {
+                        $(".validateTips").text('');
+                        $(".ui-state-error").removeClass("ui-state-error");
+                        event.preventDefault();
+                        var i = variant_sap.val();
+                        if (i === "6") {
+                            sap_ndopusk = null;
+                            sap_num_pos_select.selectmenu("widget").hide();
+                            sap_num_pos_reserv_select.selectmenu("widget").hide();
+                            sap_ozm.val('');
+                            sap_ozm_amount.val('');
+                            sap_stock_recipient.val('');
+                            sap_factory_recipient.val('');
+                            sap_ozm_bak.val('000000000107000024');
 
+                        }
+                        var valid = true;
+
+                        valid = valid && checkIsNullOfMessage(sap_num, "Введите наряд-допуск");
+                        valid = valid && checkSelect(sap_num, "наряд-допуска", 0, 99999);
+
+                        if (valid === true) {
+                            sap_num.val($.trim(sap_num.val())); // Уберем пробелы
+                            var num = sap_num.val();
+                            sap.getReservationOfNDopusk(
+                                num, i,
+                                function (result) {
+                                    if (blog) {
+                                        result_str = '';
+                                        for (var key in result) {
+                                            result_str += "[" + key + ":" + result[key] + "], ";
+                                        }
+                                        log.logInfo(user_tsk !== null ? user_tsk.UserName : '?',
+                                            'Получен ответ на запрос в САП (по наряд-допуску) Метод: [getReservationOfNDopusk(num=' + num + ',i=' + i + ')] Ответ: ' + result_str);
+                                    }
+                                    if (result.message !== undefined) {
+                                        updateTips(result.message);
+                                    } else {
+                                        if (result.RSNUM === "") {
+                                            updateTips("Резервирование по наряд-допуску:" + num + " не найдено");
+                                        } else {
+                                            sap_ndopusk = num;
+                                            sap_num.val(result.RSNUM);
+                                            sap_num_pos.val(result.RSPOS);
+                                            sap_ozm.val(result.MATNR);
+                                            sap_ozm_amount.val(result.BDMNG);
+                                            sap_factory_recipient.val(result.WERKS);
+                                            sap_ozm_amount_multiplier = ($.trim(result.MEINS) === "TO" ? 1000 : 1);
+                                            label_sap_ozm_amount.text('Количество ' + result.MEINS + ':');
+                                            var depots = tsk.getCat_DepotsOfID($.trim(result.UMLGO));
+                                            if (depots) {
+                                                sap_stock_recipient.val('(' + depots.id + ') ' + depots.name);
+                                            }
+                                        }
+                                    }
+                                });
+                        }
                     });
+                    // По номеру и поз.
                     button_sap = $('button#button-sap').on('click', function () {
+                        $(".validateTips").text('');
+                        $(".ui-state-error").removeClass("ui-state-error");
+                        event.preventDefault();
+                        var i = variant_sap.val();
 
+                        // Покажем позиции
+                        sap_num_pos_select.selectmenu("widget").hide();
+                        sap_num_pos_reserv_select.selectmenu("widget").hide();
+                        sap_ozm.val('');
+                        sap_ozm_amount.val('');
+                        sap_stock_recipient.val('');
+                        sap_factory_recipient.val('');
+                        switch (i) {
+                            case "3":
+                                sap_num.val($.trim(sap_num.val())); // Уберем пробелы
+                                num = sap_num.val();
+                                supply = null;
+                                // По номеру и поз.
+                                sap.getSupply(
+                                    num,
+                                    function (result) {
+                                        if (blog) {
+                                            result_str = '';
+                                            for (var key in result) {
+                                                result_str += "[" + key + ":" + result[key] + "], ";
+                                            }
+                                            log.logInfo(user_tsk !== null ? user_tsk.UserName : '?',
+                                                'Получен ответ на запрос в САП (по номеру и позиции) Метод: [getSupply(num=' + num + ')] Ответ: ' + result_str);
+                                        }
+                                        if (result.message !== undefined) {
+                                            updateTips(result.message);
+                                        } else {
+                                            // Проверим на возврат значений
+                                            if (result.length > 0 && result[0].posnr !== "") {
+                                                supply = result;
+                                                var pos = [];
+                                                for (i = 0, count_result_supply = result.length; i < count_result_supply; i++) {
+                                                    pos.push({ value: result[i].posnr, text: result[i].posnr });
+                                                };
+                                                // Обновим перечень позиций
+                                                updateOptionSelect(sap_num_pos_select, pos, null, -1, null);
+                                                // Покажем позиции
+                                                sap_num_pos_select.selectmenu("widget").show();
+                                            } else {
+                                                updateTips("Номер ИП №" + num + " - не найден в САП");
+                                            }
+
+                                        }
+                                    }
+                                );
+                                break;
+                            case "2":
+                                // По резервированию с передачей озм
+                                sap_num.val($.trim(sap_num.val())); // Уберем пробелы
+                                num = sap_num.val();
+                                // Определим ОЗМ бака
+                                var matrn = '000000000107000024';
+                                sap.getReservationMatrn(
+                                    num,
+                                    matrn,
+                                    2,
+                                    function (result) {
+                                        if (blog) {
+                                            result_str = '';
+                                            for (var key in result) {
+                                                result_str += "[" + key + ":" + result[key] + "], ";
+                                            }
+                                            log.logInfo(user_tsk !== null ? user_tsk.UserName : '?',
+                                                'Получен ответ на запрос в САП (По резервированию с передачей озм) Метод: [getReservationMatrn(num=' + num + ', matrn=' + matrn + ', mode=2)] Ответ: ' + result_str);
+                                        }
+                                        if (result.message !== undefined) {
+                                            updateTips(result.message);
+                                        } else {
+                                            if (result === null || result[0].RSNUM === "") {
+                                                updateTips("Номер резервирования №" + num + ", по ОЗМ:" + matrn + " - не найдет в САП");
+                                            } else {
+                                                reserv = result;
+                                                var pos = [];
+                                                for (i = 0, count_result_supply = result.length; i < count_result_supply; i++) {
+                                                    pos.push({ value: result[i].RSPOS, text: result[i].RSPOS });
+                                                };
+                                                // Обновим перечень позиций
+                                                updateOptionSelect(sap_num_pos_reserv_select, pos, null, -1, null);
+                                                // Покажем позиции
+                                                sap_num_pos_reserv_select.selectmenu("widget").show();
+                                            }
+                                        }
+                                    }
+                                );
+                                break;
+                        }
                     });
 
                     sap_num_tr = $('tr#sap-num');
@@ -385,18 +543,18 @@ $(function () {
                         -1,
                         function (event, ui) {
                             event.preventDefault();
-                            //sap_ozm.val('');
-                            //sap_ozm_amount.val('');
-                            //sap_stock_recipient.val('');
-                            //var sup = confirm_df.getPosSupply(ui.item.value);
-                            //if (sup) {
-                            //    sap_ozm.val(sup.MATNR);
-                            //    sap_ozm_amount.val(sup.LFIMG);
-                            //    sap_stock_recipient.val(sup.KUNNR);
-                            //    confirm_df.sap_ozm_amount_multiplier = ($.trim(sup.MEINS) === "TO" ? 1000 : 1);
-                            //    label_sap_ozm_amount.text('Количество ' + sup.MEINS + ':');
-                            //    // Уточнить добавить WERKS (завод)
-                            //};
+                            sap_ozm.val('');
+                            sap_ozm_amount.val('');
+                            sap_stock_recipient.val('');
+                            sap_ozm_bak.val('000000000107000024');
+                            var sup = getPosSupply(ui.item.value);
+                            if (sup) {
+                                sap_ozm.val(sup.MATNR);
+                                sap_ozm_amount.val(sup.LFIMG);
+                                sap_stock_recipient.val(sup.KUNNR);
+                                sap_ozm_amount_multiplier = ($.trim(sup.MEINS) === "TO" ? 1000 : 1);
+                                label_sap_ozm_amount.text('Количество ' + sup.MEINS + ':');
+                            }
                         },
                         null).addClass('input-edit');
                     sap_num_pos_reserv_select = initSelect(
@@ -407,36 +565,37 @@ $(function () {
                         -1,
                         function (event, ui) {
                             event.preventDefault();
-                            //sap_ozm.val('');
-                            //sap_ozm_amount.val('');
-                            //sap_factory_recipient.val('');
-                            //sap_stock_recipient.val('');
-                            //var reserv = confirm_df.getPosReserv(ui.item.value);
-                            //if (reserv !== null) {
+                            sap_ozm.val('');
+                            sap_ozm_amount.val('');
+                            sap_factory_recipient.val('');
+                            sap_stock_recipient.val('');
+                            sap_ozm_bak.val('000000000107000024');
+                            var reserv = getPosReserv(ui.item.value);
+                            if (reserv !== null) {
 
-                            //    if (reserv.BWART !== "X01") {
-                            //        OnAJAXErrorOfMessage("Вид движения BWART =" + result.BWART + " (В режиме 2, BWART должен содержать X01)");
-                            //    } else {
-                            //        //if (Number($.trim(reserv.UMLGO)) !== 435 && Number($.trim(reserv.UMLGO)) !== card.House) {
-                            //        //    OnAJAXErrorOfMessage("Шифр цеха "+card.House+" RFID карты, не совпадает с шифром цеха "+reserv.UMLGO+" резервирования.");
-                            //        //} else {
-                            //        //UMLGO = "163 "
-                            //        sap_num.val(reserv.RSNUM);
-                            //        sap_ozm.val(reserv.MATNR);
-                            //        sap_ozm_amount.val(reserv.BDMNG);
-                            //        sap_factory_recipient.val(reserv.WERKS);
-                            //        confirm_df.sap_ozm_amount_multiplier = ($.trim(reserv.MEINS) === "TO" ? 1000 : 1);
-                            //        label_sap_ozm_amount.text('Количество ' + reserv.MEINS + ':');
-                            //        var depots = catalog_depots.get($.trim(reserv.UMLGO));
-                            //        if (depots) {
-                            //            sap_stock_recipient.val('(' + depots.id + ') ' + depots.name);
-                            //        }
-                            //        //}
+                                if (reserv.BWART !== "X01") {
+                                    updateTips("Вид движения BWART =" + reserv.BWART + " (В режиме 2, BWART должен содержать X01)");
+                                } else {
+                                    //if (Number($.trim(reserv.UMLGO)) !== 435 && Number($.trim(reserv.UMLGO)) !== card.House) {
+                                    //    OnAJAXErrorOfMessage("Шифр цеха "+card.House+" RFID карты, не совпадает с шифром цеха "+reserv.UMLGO+" резервирования.");
+                                    //} else {
+                                    //UMLGO = "163 "
+                                    sap_num.val(reserv.RSNUM);
+                                    sap_ozm.val(reserv.MATNR);
+                                    sap_ozm_amount.val(reserv.BDMNG);
+                                    sap_factory_recipient.val(reserv.WERKS);
+                                    sap_ozm_amount_multiplier = ($.trim(reserv.MEINS) === "TO" ? 1000 : 1);
+                                    label_sap_ozm_amount.text('Количество ' + reserv.MEINS + ':');
+                                    var depots = tsk.getCat_DepotsOfID($.trim(reserv.UMLGO));
+                                    if (depots) {
+                                        sap_stock_recipient.val('(' + depots.id + ') ' + depots.name);
+                                    }
+                                    //}
 
-                            //    }
-                            //} else {
-                            //    OnAJAXErrorOfMessage("По указанной позиции нет данных");
-                            //}
+                                }
+                            } else {
+                                updateTips("По указанной позиции нет данных");
+                            }
                         },
                         null).addClass('input-edit');
 
@@ -700,13 +859,26 @@ $(function () {
         viewCard = function () {
 
         },
-
-
+        // Получить поставку
+        getPosSupply = function (pos) {
+            var sup = getObjects(supply, 'posnr', pos);
+            if (sup !== null && sup.length > 0) {
+                return sup[0];
+            }
+            return null;
+        },
+        // Вернуть позицию резервирования
+        getPosReserv = function (pos) {
+            var sup = getObjects(reserv, 'RSPOS', pos);
+            if (sup !== null && sup.length > 0) {
+                return sup[0];
+            }
+            return null;
+        },
         //--------------------------------------------
         // Загрузка библиотек
         loadReference = function (callback) {
-            init();
-            //LockScreen('Инициализация данных');
+            LockScreen('Инициализация данных');
             var count = 2;
             tsk.load(['catalog_ozm', 'catalog_depots', 'catalog_werks'], function () {
                 count -= 1;
@@ -738,6 +910,11 @@ $(function () {
         init(num_trk, function () {
             variant_sap.val(5).selectmenu("refresh").selectmenu("enable"); // Сбросили выбор вариантов
             viewVariant('5');
+            if (blog) {
+                log.logInfo(user_tsk !== null ? user_tsk.UserName : '?',
+                    'Инициализация завершена, режим по умолчанию: 5 - Заправка в баки ТС');
+            }
+            LockScreenOff();
         });
 
 

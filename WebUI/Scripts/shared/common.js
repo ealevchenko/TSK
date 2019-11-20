@@ -1,7 +1,7 @@
 ﻿//=========== ПЕРЕМЕННЫЕ ДЛЯ ТЕСТОВ ====================================================
 // TODO:!!!ТЕСТ УБРАТЬ
 var run_mode = Number(mode_run);
-
+var blog = $.parseJSON(logs);
 //------------------------------------------------------------------------
 // Определение параметров переданных по url
 $.extend({
@@ -23,11 +23,6 @@ $.extend({
 // Инициализация компонента Select JQuery UI компонент
 var initSelect = function (obj_select, property, data, callback_option, value_select, event_change, exceptions_value) {
     var options = [];
-    var lang = 'ru';
-    if (property.lang) {
-        lang = property.lang;
-    }
-
     // Проверка выбор неопределен
     if (value_select === -1) {
         options.push("<option value='-1' >Выберите...</option>");
@@ -62,7 +57,37 @@ var initSelect = function (obj_select, property, data, callback_option, value_se
         .selectmenu("refresh");
     return obj_select;
 };
-
+// Обновим компонента Select
+var updateOptionSelect = function (obj_select, data, callback_option, value_select, exceptions_value) {
+    var options = [];
+    // Проверка выбор неопределен
+    if (value_select === -1) {
+        options.push("<option value='-1' >Выберите...</option>");
+    }
+    if (data !== null) {
+        for (i = 0, count_data_update = data.length; i < count_data_update; i++) {
+            var option = { value: data[i].value, text: data[i].text, disabled: data[i].disabled };
+            // Преобразовать формат
+            if (typeof callback_option === 'function') {
+                option = callback_option(data[i]);
+            }
+            if (option !== null) {
+                if (exceptions_value !== null) {
+                    if (exceptions_value.indexOf(option.value) === -1) {
+                        options.push("<option value='" + option.value + "' " + (option.disabled ? "disabled='disabled'" : "") + ">" + option.text + "</option>");
+                    }
+                } else {
+                    options.push("<option value='" + option.value + "' " + (option.disabled ? "disabled='disabled'" : "") + ">" + option.text + "</option>");
+                }
+            }
+        }
+    }
+    // Заполним селект 
+    obj_select.empty()
+        .append(options.join(""))
+        .val(value_select)
+        .selectmenu("refresh");
+};
 
 /* ----------------------------------------------------------
     Функции работы с масивами

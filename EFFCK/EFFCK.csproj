@@ -50,8 +50,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abstract\ILogs.cs" />
     <Compile Include="Abstract\ISettings.cs" />
     <Compile Include="Abstract\IRepository.cs" />
+    <Compile Include="Concrete\EFLogs.cs" />
     <Compile Include="Concrete\EFCat_Werks.cs" />
     <Compile Include="Concrete\EFCat_OZM_GSM.cs" />
     <Compile Include="Concrete\EFCat_Depots.cs" />
@@ -78,6 +80,7 @@
     <Compile Include="Entities\Cat_Depots.cs" />
     <Compile Include="Entities\Cat_OZM_GSM.cs" />
     <Compile Include="Entities\Cat_Werks.cs" />
+    <Compile Include="Entities\Logs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
