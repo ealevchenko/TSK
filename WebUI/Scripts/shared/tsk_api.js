@@ -219,6 +219,13 @@ TSK_API.prototype.getCat_DepotsOfID = function (id) {
 
 };
 
+TSK_API.prototype.getCat_DepotsOfWerks = function (werks) {
+    if (this.list_catalog_depots !== null) {
+        return getObjects(this.list_catalog_depots, 'parent_id', werks);
+        }
+        return null;
+};
+
 // Вернуть значение "Catalog Werks"
 TSK_API.prototype.getCat_Werks = function (callback) {
     $.ajax({

@@ -18,7 +18,11 @@ $(function () {
         button_ok = null,
         button_cancel = null,
 
+        title = "Выдача неопределена",
+        default_mode = -1,
+
         // RFID
+        active_card = null,
         num_card = null,
         num_car = null,
         debitor = null,
@@ -116,9 +120,50 @@ $(function () {
                 return true;
             } else {
                 o.addClass("ui-state-error");
-                confirm_df.updateTips("Значение " + n + " должно быть в диапазоне от " +
+                updateTips("Значение " + n + " должно быть в диапазоне от " +
                     min + " до " + max + ".");
                 return false;
+            }
+        },
+        // Проверка на выбор за указаный период valume
+        checkSelectOfMessage = function (o, message, min, max) {
+            if (o.val() > max || o.val() < min) {
+                o.addClass("ui-state-error");
+                updateTips(message);
+                return false;
+            } else {
+                return true;
+            }
+        },
+        // Проверка на выбор valume >-1
+        checkSelectValOfMessage = function (o, message) {
+            if (Number(o.val()) < 0) {
+                o.addClass("ui-state-error");
+                updateTips(message);
+                return false;
+            } else {
+                return true;
+            }
+        },
+        //
+        checkLength = function (o, n, min, max) {
+            if (o.val().length > max || o.val().length < min) {
+                o.addClass("ui-state-error");
+                updateTips("Размер поля [" + n + "] должен быть в диапазоне от " +
+                    min + " до " + max + ".");
+                return false;
+            } else {
+                return true;
+            }
+        },
+        // Проверка на "0"
+        checkIsZeroOfMessage = function (o, message) {
+            if (o.val() === 0) {
+                o.addClass("ui-state-error");
+                updateTips(message);
+                return false;
+            } else {
+                return true;
             }
         },
         // Проверка на правильность заполнения формы
@@ -128,103 +173,90 @@ $(function () {
             $(".ui-state-error").removeClass("ui-state-error");
             // Проверка RFID карты на активность
 
-            if (ntype_test === 0 && confirm_df.gun) { valid = valid && confirm_df.checkCheckboxOfMessage($('#deliver-Taken'), true, "Пистолет не снят - выдача запрещена!") }
+            //if (ntype_test === 0 && confirm_df.gun) { valid = valid && confirm_df.checkCheckboxOfMessage($('#deliver-Taken'), true, "Пистолет не снят - выдача запрещена!") }
 
-            if (confirm_df.input_deliver_start_counter.val() !== null && Number(confirm_df.input_deliver_start_counter.val()) > 0) {
-                //
-            } else {
-                confirm_df.input_deliver_start_counter.addClass("ui-state-error");
-                confirm_df.updateTips("Начальное значение счетчика неопределенно или равно '0'");
+            //if (confirm_df.input_deliver_start_counter.val() !== null && Number(confirm_df.input_deliver_start_counter.val()) > 0) {
+            //    //
+            //} else {
+            //    confirm_df.input_deliver_start_counter.addClass("ui-state-error");
+            //    confirm_df.updateTips("Начальное значение счетчика неопределенно или равно '0'");
 
-                return false;
-            }
+            //    return false;
+            //}
 
-            if (!confirm_df.checkbox_deliver_Passage.prop('checked')) {
+            if (!deliver.prop('checked')) {
 
-                if (confirm_df.card === null) {
-                    confirm_df.updateTips("Нет RFID-карты - выдача запрещена!");
+                if (card === null) {
+                    updateTips("Нет RFID-карты - выдача запрещена!");
                     return false;
                 }
 
-                if (confirm_df.card && !confirm_df.card.Active) {
-                    confirm_df.updateTips("RFID-карта не активна - выдача запрещена!");
+                if (card && !card.Active) {
+                    updateTips("RFID-карта не активна - выдача запрещена!");
                     return false;
                 }
                 // режим не пролив
-                valid = valid && confirm_df.checkSelectOfMessage(confirm_df.select_variant, "Выберите и заполните вариант выдачи", 1, 6);
+                valid = valid && checkSelectOfMessage(variant_sap, "Выберите и заполните вариант выдачи", 1, 6);
+                valid = valid && checkIsNullOfMessage(fio, "Не указан ФИО");                
 
-                valid = valid && confirm_df.checkIsNullOfMessage(confirm_df.input_sap_num, "Не указан номер (резервирования\ исх.поставки\ требования М-11)");
-                if (variant !== "4" && variant !== "3" && variant !== "2" && variant !== "6") valid = valid && confirm_df.checkIsNullOfMessage(confirm_df.input_sap_num_pos, "Не указан номер позиции");
-                if (variant === "3") valid = valid && confirm_df.checkSelectValOfMessage(confirm_df.select_sap_num_pos, "Выберите номер позиции ИП", 1, 10);
-                if (variant === "2") valid = valid && confirm_df.checkSelectValOfMessage(confirm_df.select_sap_num_pos_reserv, "Выберите номер позиции ИП", 1, 10);
-                valid = valid && confirm_df.checkLength(confirm_df.input_sap_num_ts, "Номер ТС фактический", 1, 40);
-                //if (variant !== "5") valid = valid && confirm_df.checkLength(confirm_df.input_sap_num_kpp, "№ КПП", 1, 2);
-                if (variant !== "5" && variant !== "6") valid = valid && confirm_df.checkLength(confirm_df.input_sap_name_forwarder, "ФИО экспедитора", 1, 40);
+                valid = valid && checkIsNullOfMessage(sap_num, "Не указан номер (резервирования\ исх.поставки\ требования М-11)");
+                if (variant !== "4" && variant !== "3" && variant !== "2" && variant !== "6") valid = valid && checkIsNullOfMessage(sap_num_pos, "Не указан номер позиции");
+                if (variant === "3") valid = valid && checkSelectValOfMessage(sap_num_pos, "Выберите номер позиции ИП", 1, 10);
+                if (variant === "2") valid = valid && checkSelectValOfMessage(sap_num_pos_reserv_select, "Выберите номер позиции ИП", 1, 10);
+                valid = valid && checkLength(sap_num_ts, "Номер ТС фактический", 1, 40);
+                if (variant !== "5" && variant !== "6") valid = valid && checkLength(sap_name_forwarder, "ФИО экспедитора", 1, 40);
                 //Проверка возврата САП
-                if (variant !== "4") valid = valid && confirm_df.checkLength(confirm_df.input_sap_ozm, "ОЗМ из (резервирования \ поставки) ", 1, 18);
-                if (variant === "4") valid = valid && confirm_df.checkSelectValOfMessage(confirm_df.select_sap_ozm, "Выберите ОЗМ");
-                //valid && confirm_df.checkLength(confirm_df.input_sap_ozm_bak, "ОЗМ согласно бака", 1, 18);
-                if (variant !== "4") valid = valid && confirm_df.checkIsNullOfMessage(confirm_df.input_sap_stock_recipient, "Нет значения склад получателя (из резервирования \ получатель материала в ИП)");
-                if (variant === "4") valid = valid && confirm_df.checkSelectValOfMessage(confirm_df.select_sap_stock_recipient, "Выберите склад получателя");
-                if (variant !== "4" && variant !== "3") valid = valid && confirm_df.checkIsNullOfMessage(sap_factory_recipient, "Нет значения завод-получатель");
-                if (variant === "4") valid = valid && confirm_df.checkSelectValOfMessage(confirm_df.select_sap_factory_recipient, "Выберите завод-получатель");
-                if (variant === "2" && variant === "5" && variant === "6") valid = valid && confirm_df.checkIsNullOfMessage(confirm_df.input_sap_id_card, "Нет значения ID карты");
+                if (variant !== "4") valid = valid && checkLength(sap_ozm, "ОЗМ из (резервирования \ поставки) ", 1, 18);
+                if (variant === "4") valid = valid && checkSelectValOfMessage(sap_ozm_select, "Выберите ОЗМ");
+                if (variant !== "4") valid = valid && checkIsNullOfMessage(sap_stock_recipient, "Нет значения склад получателя (из резервирования \ получатель материала в ИП)");
+                if (variant === "4") valid = valid && checkSelectValOfMessage(sap_stock_recipient_select, "Выберите склад получателя");
+                if (variant !== "4" && variant !== "3") valid = valid && checkIsNullOfMessage(sap_factory_recipient, "Нет значения завод-получатель");
+                if (variant === "4") valid = valid && checkSelectValOfMessage(sap_factory_recipient_select, "Выберите завод-получатель");
+                if (variant === "2" && variant === "5" && variant === "6") valid = valid && checkIsNullOfMessage(sap_id_card, "Нет значения ID карты");
 
                 if (variant !== "4") {
-                    var max_mass = confirm_df.input_sap_ozm_amount.val() !== null ? Number(confirm_df.input_sap_ozm_amount.val()) : 0;
-                    valid = valid && confirm_df.checkSelect(confirm_df.input_deliver_mase_fuel, "расчетной массы", 0, max_mass * confirm_df.sap_ozm_amount_multiplier);
+                    var max_mass = sap_ozm_amount.val() !== null ? Number(sap_ozm_amount.val()) : 0;
+                    valid = valid && checkSelect(mass, "расчетной массы", 0, max_mass * sap_ozm_amount_multiplier);
                 }
                 // Проверка на совподение ОЗМ -------------------------------------------------
-                var ozm_tanks;
-                // Пистолет
-                if (confirm_df.type === 0) {
-                    ozm_tanks = confirm_df.gun != null ? confirm_df.gun.type_fuel : null;
-                }
-                // НС
-                if (confirm_df.type === 1) {
-                    ozm_tanks = confirm_df.risers != null ? confirm_df.risers.type_fuel : null;
-                }
-                var ozm_sap = variant === "4" ? confirm_df.select_sap_ozm.val() : confirm_df.input_sap_ozm.val();
+                var ozm_sap = variant === "4" ? sap_ozm_select.val() : sap_ozm.val();
                 if (ozm_sap && ozm_sap !== "") {
                     ozm_sap = Number(ozm_sap);
-                    if (ozm_sap !== ozm_tanks) {
-                        confirm_df.updateTips("ОЗМ выбранной емкости и ОЗМ требования – не совпадают!");
+                    if (ozm_sap !== 107000024) {
+                        updateTips("ОЗМ емкости и ОЗМ требования – не совпадают!");
                         valid = false;
                     }
                 }
                 //-------------------------------------------------------------------------------
             }
             // Проверка выбранного бака
-            //valid = valid && confirm_df.checkSelectValOfMessage(confirm_df.select_capacity, "Выберите бак с топливом");
-            valid = valid && confirm_df.checkIsNullOfMessage(confirm_df.input_deliver_take_dens, "Нет значения плотности ГСМ в баке");
-            valid = valid && confirm_df.checkIsZeroOfMessage(confirm_df.input_deliver_take_dens, "Значение плотности ГСМ в баке = 0, вычисление массы невозможно");
-            valid = valid && confirm_df.checkIsNullOfMessage(confirm_df.input_deliver_take_level, "Нет значения уровень ГСМ в баке");
-            valid = valid && confirm_df.checkIsNullOfMessage(confirm_df.input_deliver_take_mass, "Нет значения массы ГСМ в баке");
-            valid = valid && confirm_df.checkIsNullOfMessage(confirm_df.input_deliver_take_temp, "Нет значения температуры ГСМ в баке");
-            valid = valid && confirm_df.checkIsNullOfMessage(confirm_df.input_deliver_take_volume, "Нет значения объема ГСМ в баке");
-            valid = valid && confirm_df.checkIsNullOfMessage(confirm_df.input_deliver_take_water_level, "Нет значения уровень п-воды в баке");
+
+            valid = valid && checkIsNullOfMessage(dens, "Нет значения плотности ГСМ в баке");
+            valid = valid && checkIsZeroOfMessage(dens, "Значение плотности ГСМ в баке = 0, вычисление массы невозможно");
+
             // Проверка колонки
-            valid = valid && confirm_df.checkIsNullOfMessage(confirm_df.input_deliver_dose_fuel, "Нет значения дозы");
-            if (confirm_df.type === 0) {
-                valid = valid && confirm_df.checkSelect(confirm_df.input_deliver_dose_fuel, "дозы", 0, 4999);
-            } else {
-                valid = valid && confirm_df.checkSelect(confirm_df.input_deliver_dose_fuel, "дозы (для НС)", ins_advance, 99999);
-            }
+            valid = valid && checkIsNullOfMessage(volume, "Нет значения дозы");
+            //if (confirm_df.type === 0) {
+            //    valid = valid && confirm_df.checkSelect(confirm_df.input_deliver_dose_fuel, "дозы", 0, 4999);
+            //} else {
+            //    valid = valid && confirm_df.checkSelect(confirm_df.input_deliver_dose_fuel, "дозы (для НС)", ins_advance, 99999);
+            //}
             return valid;
         },
         //---- Инициализация окна -------------------
         // Инициализация
         init = function (num_trk, callback) {
-            var title = "Выдача неопределена";
-            var fio_title = "";
+
             switch (num_trk) {
                 case 1:
                     title = "Выдача на тепловоз (К-1)";
                     fio_title = "ФИО машиниста :";
+                    default_mode = 5;
                     break;
                 case 2:
                     title = "Выдача на бензовоз (К-2)";
                     fio_title = "ФИО водителя :";
+                    default_mode = 2;
                     break;
                 default:
                     break;
@@ -235,11 +267,20 @@ $(function () {
             button_ok = $('button#button-ok').on('click', function () {
                 event.preventDefault();
                 LockScreen('Идет проверка...');
+                var variant = variant_sap.val();
+                var valid = validationConfirm(variant);
+                if (valid) {
+                    // Да форма заполнена
+                    tsk.putSettingDisplay_fd(0,
+                        function (result) {
+                            if (blog) { log.logInfo(user_tsk !== null ? user_tsk.UserName : '?', 'Панель оператора "' + title + '" - Нажата кнопка [Ок]'); }
+                        });
+                } else {
+                    // Нет форма не заполнена
+                    // .....
+                    LockScreenOff();
+                }
 
-                tsk.putSettingDisplay_fd(0,
-                    function (result) {
-                        if (blog) { log.logInfo(user_tsk !== null ? user_tsk.UserName : '?', 'Панель оператора "' + title + '" - Нажата кнопка [Ок]'); }
-                    });
             });
             button_cancel = $('button#button-cancel').on('click', function () {
                 event.preventDefault();
@@ -254,12 +295,13 @@ $(function () {
                 function (result) {
                     // -----------------------------------------------------------------
                     title_fuel_delivery = $('legend#title-fuel-delivery').text(title);
+                    active_card = $('input#active-card');
 
-                    num_card = $('input#num-card');
-                    num_car = $('input#num-car');
-                    debitor = $('input#debitor');
+                    num_card = $('input#num-card').addClass('input-view');
+                    num_car = $('input#num-car').addClass('input-view');
+                    debitor = $('input#debitor').addClass('input-view');
                     fio_title = $('th#fio-title').text(fio_title);
-                    fio = $('input#fio');
+                    fio = $('input#fio').addClass('input-edit');
                     volume = $('input#volume').addClass('input-edit').on("change", function (event) {
                         event.preventDefault();
                         viewCalcMass();
@@ -272,13 +314,13 @@ $(function () {
                     deliver = $('input#deliver').prop('checked', false).on("change", function (event) {
                         event.preventDefault();
                         var res = $(this).prop('checked');
-                        //if (res) {
-                        //    variant_sap.val(-1).selectmenu("refresh");
-                        //    clear();
-                        //    variant_sap.selectmenu("disable");
-                        //} else {
-                        //    variant_sap.selectmenu("enable");
-                        //}
+                        if (res) {
+                            variant_sap.val(-1).selectmenu("refresh");
+                            clear();
+                            variant_sap.selectmenu("disable");
+                        } else {
+                            variant_sap.selectmenu("enable");
+                        }
                     });
 
                     variant_sap = initSelect(
@@ -355,7 +397,7 @@ $(function () {
                                                 } else {
                                                     sap_num.val(result.RSNUM);
                                                     sap_num_pos.val(result.RSPOS);
-                                                    sap_ozm_bak.val('000000000107000024');
+                                                    //sap_ozm_bak.val('000000000107000024');
                                                     sap_ozm.val(result.MATNR);
                                                     sap_ozm_amount.val(result.BDMNG);
                                                     sap_factory_recipient.val(result.WERKS);
@@ -387,7 +429,7 @@ $(function () {
                             sap_ozm_amount.val('');
                             sap_stock_recipient.val('');
                             sap_factory_recipient.val('');
-                            sap_ozm_bak.val('000000000107000024');
+                            //sap_ozm_bak.val('000000000107000024');
 
                         }
                         var valid = true;
@@ -546,7 +588,7 @@ $(function () {
                             sap_ozm.val('');
                             sap_ozm_amount.val('');
                             sap_stock_recipient.val('');
-                            sap_ozm_bak.val('000000000107000024');
+                            //sap_ozm_bak.val('000000000107000024');
                             var sup = getPosSupply(ui.item.value);
                             if (sup) {
                                 sap_ozm.val(sup.MATNR);
@@ -569,7 +611,7 @@ $(function () {
                             sap_ozm_amount.val('');
                             sap_factory_recipient.val('');
                             sap_stock_recipient.val('');
-                            sap_ozm_bak.val('000000000107000024');
+                            //sap_ozm_bak.val('000000000107000024');
                             var reserv = getPosReserv(ui.item.value);
                             if (reserv !== null) {
 
@@ -629,7 +671,7 @@ $(function () {
 
                     sap_ozm_bak_tr = $('tr#sap-ozm-bak');
                     label_sap_ozm_bak = $('th#label-sap-ozm-bak');
-                    sap_ozm_bak = $('textarea#sap-ozm-bak').addClass('input-view');
+                    sap_ozm_bak = $('input#sap-ozm-bak').val('000000000107000024').addClass('input-view');
 
                     sap_ozm_amount_tr = $('tr#sap-ozm-amount');
                     label_sap_ozm_amount = $('th#label-sap-ozm-amount');
@@ -665,26 +707,27 @@ $(function () {
                         -1,
                         function (event, ui) {
                             event.preventDefault();
-                            //sap_stock_recipient_select.selectmenu("enable");
-                            //var kod = "000" + ui.item.value;
-                            ////kod.length - 4;
-                            ////var kd = kod.substring(kod.length - 4);
-                            ////var list = catalog_depots.getOfWerks(kod.substring(kod.length - 4));
-                            //updateOptionSelect(
-                            //    sap_stock_recipient_select,
-                            //    catalog_depots.getOfWerks(kod.substring(kod.length - 4)),
-                            //    function (row) {
-                            //        return { value: row.id, text: row.name };
-                            //    },
-                            //    -1,
-                            //    null);
+                            //sap_ozm_bak.val('000000000107000024');
+                            sap_stock_recipient_select.selectmenu("enable");
+                            var kod = "000" + ui.item.value;
+                            updateOptionSelect(
+                                sap_stock_recipient_select,
+                                tsk.getCat_DepotsOfWerks(kod.substring(kod.length - 4)),
+                                function (row) {
+                                    return { value: row.id, text: row.name };
+                                },
+                                -1,
+                                null);
                         },
                         null);
 
                     sap_id_card_tr = $('tr#sap-id-card');
                     label_sap_id_card = $('th#label-sap-id-card');
                     sap_id_card = $('input#sap-id-card').addClass('input-view');
-
+                    // Прочесть карту
+                    getCard();
+                    // Показать карту
+                    viewCard();                    
                     // -----------------------------------------------------------------
                     if (typeof callback === 'function') {
                         LockScreenOff();
@@ -715,8 +758,9 @@ $(function () {
         },
         // Вариант выбора
         viewVariant = function (value) {
-            switch (value) {
-                case '2':
+
+            switch (Number(value)) {
+                case 2:
                     clear();
                     button_sap_tr.show();
                     button_sap.show();
@@ -738,7 +782,7 @@ $(function () {
                         sap_id_card.val(card.Id);
                     }
                     break;
-                case '3':
+                case 3:
                     clear();
                     button_sap_tr.show();
                     button_sap.show();
@@ -758,7 +802,7 @@ $(function () {
                         sap_num_ts.val(card.AutoNumber);
                     }
                     break;
-                case '4':
+                case 4:
                     clear();
                     sap_num_tr.show(); label_sap_num.text('*Номер требования М-11 :');
                     sap_num_ts_tr.show(); label_sap_num_ts.text('*Номер ТС фактический :');
@@ -782,7 +826,7 @@ $(function () {
                         sap_num_ts.val(card.AutoNumber);
                     }
                     break;
-                case '5':
+                case 5:
                     clear();
                     button_sap_tr.show();
                     button_sap.hide();
@@ -805,7 +849,7 @@ $(function () {
                         sap_id_card.val(card.Id);
                     }
                     break;
-                case '6':
+                case 6:
                     clear();
                     button_sap_tr.show();
                     button_sap.hide();
@@ -849,7 +893,14 @@ $(function () {
         },
         // Определить RFID карту
         getCard = function () {
-
+            card = {
+                Id:1,
+                Active: true,
+                Number: '039,02783',
+                AutoNumber: 'АЕ 0311 АВ',
+                Debitor: 101635,
+                AutoModel: 'НЕМАН 52012 050',
+            };
         },
         // Определить параметры емкости
         getTank = function () {
@@ -857,7 +908,20 @@ $(function () {
         },
         // Показать RFID карту
         viewCard = function () {
-
+            // Вывести инфу по карте
+            if (card) {
+                active_card.prop('checked', card.Active);
+                num_card.val(card.Number);
+                num_car.val(card.AutoNumber);
+                debitor.val(card.Debitor);
+                //$('#deliver-AutoModel').val(card.AutoModel).addClass('input_view');
+            } else {
+                active_card.prop('checked', false);
+                num_card.val('');
+                num_car.val('');
+                debitor.val('');
+                //$('#deliver-AutoModel').val('').addClass('input_view');
+            }
         },
         // Получить поставку
         getPosSupply = function (pos) {
@@ -908,11 +972,13 @@ $(function () {
     loadReference(function (result) {
         var num_trk = (vars !== null && vars.num !== null && (Number(vars.num) > 0 && Number(vars.num) < 3) ? Number(vars.num) : 0);
         init(num_trk, function () {
-            variant_sap.val(5).selectmenu("refresh").selectmenu("enable"); // Сбросили выбор вариантов
-            viewVariant('5');
+            //if ()
+
+            variant_sap.val(default_mode).selectmenu("refresh").selectmenu("enable"); // Сбросили выбор вариантов
+            viewVariant(default_mode);
             if (blog) {
                 log.logInfo(user_tsk !== null ? user_tsk.UserName : '?',
-                    'Инициализация завершена, режим по умолчанию: 5 - Заправка в баки ТС');
+                    'Инициализация завершена, режим по умолчанию: ' + default_mode);
             }
             LockScreenOff();
         });

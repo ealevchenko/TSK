@@ -37,6 +37,10 @@
                     <legend>RFID-карта</legend>
                     <table class="table-display">
                         <tr>
+                            <th class="title-field">Карта активная :</th>
+                            <td><input id="active-card" name="active-card" type="checkbox" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all" /></td>
+                        </tr>
+                        <tr>
                             <th class="title-field">Номер карты :</th>
                             <td><input id="num-card" name="num-card" type="text" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all" /></td>
                         </tr>
@@ -50,7 +54,7 @@
                         </tr>
                         <tr>
                             <th class="title-field" id="fio-title"></th>
-                            <td><input id="fio" name="fio" type="text" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all" /></td>
+                            <td><input id="fio" name="fio" type="text" class="confirm-input ui-widget-content ui-corner-all" /></td>
                         </tr>
                     </table>
                 </fieldset>
@@ -156,7 +160,9 @@
 
                                 </th>
                                 <td>
-                                    <textarea id="sap-ozm-bak" rows="2" name="sap-ozm-bak" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all"></textarea>
+                                    @*<textarea id="sap-ozm-bak" rows="2" name="sap-ozm-bak" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all"></textarea>*@
+                                    <input id="sap-ozm-bak" name="sap-ozm-bak" type="number" disabled="disabled" class="confirm-input ui-widget-content ui-corner-all" />
+
                                 </td>
                             </tr>
                             <tr id="sap-ozm-amount">
