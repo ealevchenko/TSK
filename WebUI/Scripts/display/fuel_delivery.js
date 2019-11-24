@@ -5,10 +5,12 @@ $(function () {
     //=======================================================================
     var vars = $.getUrlVars(),
         tsk = new TSK_API(),
-        log = new LOG_API(),
+        log = null, // лог иницилизируется после загрузки библиотек
         sap = new SAP_API(),
+        opc = new OPC_API(),
         user_tsk = null,
-        card = null,
+        rfid = null,        // RFID
+        tank = null,        // Tank
         supply = null,  // резерврование 3 режим
         reserv = null,  // резерврование 2 режим
         //=======================================================================
@@ -17,10 +19,13 @@ $(function () {
         title_fuel_delivery = null,
         button_ok = null,
         button_cancel = null,
+        // Номер переданый форме
+        num_select = (vars !== null && vars.num !== null && (Number(vars.num) > 0 && Number(vars.num) < 3) ? Number(vars.num) : 0),
 
         title = "Выдача неопределена",
         default_mode = -1,
-
+        num_out = null,         // номер ТРК выдачи
+        open_fuel_sale = null,  // Открытая строка выдачи
         // RFID
         active_card = null,
         num_card = null,
@@ -186,18 +191,18 @@ $(function () {
 
             if (!deliver.prop('checked')) {
 
-                if (card === null) {
+                if (rfid.card === null) {
                     updateTips("Нет RFID-карты - выдача запрещена!");
                     return false;
                 }
 
-                if (card && !card.Active) {
+                if (rfid.card && !rfid.card.Active) {
                     updateTips("RFID-карта не активна - выдача запрещена!");
                     return false;
                 }
                 // режим не пролив
                 valid = valid && checkSelectOfMessage(variant_sap, "Выберите и заполните вариант выдачи", 1, 6);
-                valid = valid && checkIsNullOfMessage(fio, "Не указан ФИО");                
+                valid = valid && checkIsNullOfMessage(fio, "Не указан ФИО");
 
                 valid = valid && checkIsNullOfMessage(sap_num, "Не указан номер (резервирования\ исх.поставки\ требования М-11)");
                 if (variant !== "4" && variant !== "3" && variant !== "2" && variant !== "6") valid = valid && checkIsNullOfMessage(sap_num_pos, "Не указан номер позиции");
@@ -246,7 +251,7 @@ $(function () {
         //---- Инициализация окна -------------------
         // Инициализация
         init = function (num_trk, callback) {
-
+            num_out = num_trk;
             switch (num_trk) {
                 case 1:
                     title = "Выдача на тепловоз (К-1)";
@@ -262,7 +267,7 @@ $(function () {
                     break;
             }
 
-            if (blog) { log.logInfo(user_tsk !== null ? user_tsk.UserName : '?', 'Панель оператора "' + title + '" - ОТКРЫТА'); }
+            log.logInfo('Панель оператора "' + title + '" - ОТКРЫТА');
 
             button_ok = $('button#button-ok').on('click', function () {
                 event.preventDefault();
@@ -271,10 +276,25 @@ $(function () {
                 var valid = validationConfirm(variant);
                 if (valid) {
                     // Да форма заполнена
-                    tsk.putSettingDisplay_fd(0,
-                        function (result) {
-                            if (blog) { log.logInfo(user_tsk !== null ? user_tsk.UserName : '?', 'Панель оператора "' + title + '" - Нажата кнопка [Ок]'); }
-                        });
+                    log.logInfo('Панель оператора "' + title + '" - Нажата кнопка [Ок]');
+                    // Получим новую строку
+                    var new_fuel_sale = getNewFuelSale(num_out);
+                    log.logInfo('Получена новая строка fuelsale = ' + JSON.stringify(new_fuel_sale));
+                    tsk.postFuelSale(new_fuel_sale, function (result_id) {
+                        if (result_id > 0) {
+                            // Закрыть форму
+                            log.logInfo('Добавлена новая строка fuelsale = ' + JSON.stringify(new_fuel_sale)+ ', id новой строки='+result_id);
+                            tsk.putSettingDisplay_fd(0,
+                                function (result_close) {
+                                    log.logInfo('Панель оператора "' + title + '" - закрыта, result=' + result_close);
+                                });
+                        } else {
+                            updateTips("ОШИБКА создания новой строки fuelsale, код ошибки=" + result_id);
+                            log.logWarn("ОШИБКА создания новой строки fuelsale, код ошибки=" + result_id);
+                            LockScreenOff();
+                        }
+                    });
+
                 } else {
                     // Нет форма не заполнена
                     // .....
@@ -287,7 +307,7 @@ $(function () {
                 LockScreen('Форма закрывается...');
                 tsk.putSettingDisplay_fd(0,
                     function (result) {
-                        if (blog) { log.logInfo(user_tsk !== null ? user_tsk.UserName : '?', 'Панель оператора "' + title + '" - Нажата кнопка [Cancel]'); }
+                        log.logInfo('Панель оператора "' + title + '" - Нажата кнопка [Cancel]');
                     });
             });
             // Установим признак открытого окна
@@ -337,10 +357,7 @@ $(function () {
                         -1,
                         function (event, ui) {
                             event.preventDefault();
-                            if (blog) {
-                                log.logInfo(user_tsk !== null ? user_tsk.UserName : '?',
-                                    'Выбран режим : ' + ui.item.value + ' - ' + ui.item.label);
-                            }
+                            log.logInfo('Выбран режим : ' + ui.item.value + ' - ' + ui.item.label);
                             viewVariant(ui.item.value);
                         },
                         null
@@ -371,7 +388,7 @@ $(function () {
                                     // По резервированию
                                     var val = volume.val();
                                     var mas = mass.val();
-                                    var debitor = card !== null ? card.Debitor : null;
+                                    var debitor = rfid.card !== null ? rfid.card.Debitor : null;
                                     var ozm = '107000024';
                                     // Запрос в САП по объему, массе и дебитору
                                     sap.getReservationOfVolumeMassDebitor(
@@ -381,14 +398,7 @@ $(function () {
                                         ozm,
                                         i,
                                         function (result) {
-                                            if (blog) {
-                                                result_str = '';
-                                                for (var key in result) {
-                                                    result_str += "[" + key + ":" + result[key] + "], ";
-                                                }
-                                                log.logInfo(user_tsk !== null ? user_tsk.UserName : '?',
-                                                    'Получен ответ на запрос в САП (по объему, массе и дебитору) Метод: [getReservationOfVolumeMassDebitor(val=' + val + ',mas=' + mas + ',debitor=' + debitor + ',ozm=' + ozm + ',i=' + i + ')] Ответ: ' + result_str);
-                                            }
+                                            log.logInfo('Получен ответ на запрос в САП (по объему, массе и дебитору) Метод: [getReservationOfVolumeMassDebitor(val=' + val + ',mas=' + mas + ',debitor=' + debitor + ',ozm=' + ozm + ',i=' + i + ')] Ответ: ' + JSON.stringify(result));
                                             if (result.message !== undefined) {
                                                 updateTips(result.message);
                                             } else {
@@ -443,14 +453,7 @@ $(function () {
                             sap.getReservationOfNDopusk(
                                 num, i,
                                 function (result) {
-                                    if (blog) {
-                                        result_str = '';
-                                        for (var key in result) {
-                                            result_str += "[" + key + ":" + result[key] + "], ";
-                                        }
-                                        log.logInfo(user_tsk !== null ? user_tsk.UserName : '?',
-                                            'Получен ответ на запрос в САП (по наряд-допуску) Метод: [getReservationOfNDopusk(num=' + num + ',i=' + i + ')] Ответ: ' + result_str);
-                                    }
+                                    log.logInfo('Получен ответ на запрос в САП (по наряд-допуску) Метод: [getReservationOfNDopusk(num=' + num + ',i=' + i + ')] Ответ: ' + JSON.stringify(result));
                                     if (result.message !== undefined) {
                                         updateTips(result.message);
                                     } else {
@@ -497,14 +500,7 @@ $(function () {
                                 sap.getSupply(
                                     num,
                                     function (result) {
-                                        if (blog) {
-                                            result_str = '';
-                                            for (var key in result) {
-                                                result_str += "[" + key + ":" + result[key] + "], ";
-                                            }
-                                            log.logInfo(user_tsk !== null ? user_tsk.UserName : '?',
-                                                'Получен ответ на запрос в САП (по номеру и позиции) Метод: [getSupply(num=' + num + ')] Ответ: ' + result_str);
-                                        }
+                                        log.logInfo('Получен ответ на запрос в САП (по номеру и позиции) Метод: [getSupply(num=' + num + ')] Ответ: ' + JSON.stringify(result));
                                         if (result.message !== undefined) {
                                             updateTips(result.message);
                                         } else {
@@ -538,14 +534,7 @@ $(function () {
                                     matrn,
                                     2,
                                     function (result) {
-                                        if (blog) {
-                                            result_str = '';
-                                            for (var key in result) {
-                                                result_str += "[" + key + ":" + result[key] + "], ";
-                                            }
-                                            log.logInfo(user_tsk !== null ? user_tsk.UserName : '?',
-                                                'Получен ответ на запрос в САП (По резервированию с передачей озм) Метод: [getReservationMatrn(num=' + num + ', matrn=' + matrn + ', mode=2)] Ответ: ' + result_str);
-                                        }
+                                        log.logInfo('Получен ответ на запрос в САП (По резервированию с передачей озм) Метод: [getReservationMatrn(num=' + num + ', matrn=' + matrn + ', mode=2)] Ответ: ' + JSON.stringify(result));
                                         if (result.message !== undefined) {
                                             updateTips(result.message);
                                         } else {
@@ -618,8 +607,8 @@ $(function () {
                                 if (reserv.BWART !== "X01") {
                                     updateTips("Вид движения BWART =" + reserv.BWART + " (В режиме 2, BWART должен содержать X01)");
                                 } else {
-                                    //if (Number($.trim(reserv.UMLGO)) !== 435 && Number($.trim(reserv.UMLGO)) !== card.House) {
-                                    //    OnAJAXErrorOfMessage("Шифр цеха "+card.House+" RFID карты, не совпадает с шифром цеха "+reserv.UMLGO+" резервирования.");
+                                    //if (Number($.trim(reserv.UMLGO)) !== 435 && Number($.trim(reserv.UMLGO)) !== rfid.card.House) {
+                                    //    OnAJAXErrorOfMessage("Шифр цеха "+rfid.card.House+" RFID карты, не совпадает с шифром цеха "+reserv.UMLGO+" резервирования.");
                                     //} else {
                                     //UMLGO = "163 "
                                     sap_num.val(reserv.RSNUM);
@@ -727,14 +716,13 @@ $(function () {
                     // Прочесть карту
                     getCard();
                     // Показать карту
-                    viewCard();                    
+                    viewCard();
                     // -----------------------------------------------------------------
                     if (typeof callback === 'function') {
                         LockScreenOff();
                         callback();
                     }
                 });
-
         },
         //---- вариант выдачи ------------------------
         // Очистить выбор
@@ -777,9 +765,9 @@ $(function () {
                     sap_stock_recipient_tr.show(); sap_stock_recipient.attr('disabled', 'disabled').show(); label_sap_stock_recipient.text('Склад получателя из резервирования :');
                     sap_factory_recipient_tr.show(); sap_factory_recipient.attr('disabled', 'disabled').show(); label_sap_factory_recipient.text('Завод-получатель :');
                     sap_id_card_tr.show(); label_sap_id_card.text('ИД карта :');
-                    if (card) {
-                        sap_num_ts.val(card.AutoNumber);
-                        sap_id_card.val(card.Id);
+                    if (rfid.card) {
+                        sap_num_ts.val(rfid.card.AutoNumber);
+                        sap_id_card.val(rfid.card.Id);
                     }
                     break;
                 case 3:
@@ -798,8 +786,8 @@ $(function () {
                     sap_ozm_amount_tr.show(); label_sap_ozm_amount.text('Количество :');
                     sap_stock_recipient_tr.show(); sap_stock_recipient.attr('disabled', 'disabled').show(); label_sap_stock_recipient.text('Склад получателя = Получатель материала в ИП :');
 
-                    if (card) {
-                        sap_num_ts.val(card.AutoNumber);
+                    if (rfid.card) {
+                        sap_num_ts.val(rfid.card.AutoNumber);
                     }
                     break;
                 case 4:
@@ -822,8 +810,8 @@ $(function () {
                     sap_factory_recipient_select.selectmenu("widget").show();
                     //sap_factory_recipient_select.val(-1).selectmenu("refresh");
                     label_sap_factory_recipient.text('Завод-получатель :');
-                    if (card) {
-                        sap_num_ts.val(card.AutoNumber);
+                    if (rfid.card) {
+                        sap_num_ts.val(rfid.card.AutoNumber);
                     }
                     break;
                 case 5:
@@ -843,10 +831,10 @@ $(function () {
                     sap_stock_recipient_tr.show(); sap_stock_recipient.attr('disabled', 'disabled').show(); label_sap_stock_recipient.text('Склад получателя из резервирования :');
                     sap_factory_recipient_tr.show(); sap_factory_recipient.attr('disabled', 'disabled').show(); label_sap_factory_recipient.text('Завод-получатель :');
                     sap_id_card_tr.show(); label_sap_id_card.text('ИД карта :');
-                    if (card) {
-                        sap_num_ts.val(card.AutoNumber);
-                        //sap_num_ts.val(card.Debitor + '/' + card.AutoNumber + '/' + card.AutoModel);
-                        sap_id_card.val(card.Id);
+                    if (rfid.card) {
+                        sap_num_ts.val(rfid.card.AutoNumber);
+                        //sap_num_ts.val(rfid.card.Debitor + '/' + rfid.card.AutoNumber + '/' + rfid.card.AutoModel);
+                        sap_id_card.val(rfid.card.Id);
                     }
                     break;
                 case 6:
@@ -866,10 +854,10 @@ $(function () {
                     sap_stock_recipient_tr.show(); sap_stock_recipient_tr.show(); sap_stock_recipient.attr('disabled', 'disabled').show(); label_sap_stock_recipient.text('Склад получателя из резервирования :');
                     sap_factory_recipient_tr.show(); sap_factory_recipient.attr('disabled', 'disabled').show(); label_sap_factory_recipient.text('Завод-получатель :');
                     sap_id_card_tr.show(); label_sap_id_card.text('ИД карта :');
-                    if (card) {
-                        //sap_num_ts.val(card.Debitor + '/' + card.AutoNumber + '/' + card.AutoModel)
-                        sap_num_ts.val(card.AutoNumber);
-                        sap_id_card.val(card.Id);
+                    if (rfid.card) {
+                        //sap_num_ts.val(rfid.card.Debitor + '/' + rfid.card.AutoNumber + '/' + rfid.card.AutoModel)
+                        sap_num_ts.val(rfid.card.AutoNumber);
+                        sap_id_card.val(rfid.card.Id);
                     }
                     break;
                 default:
@@ -893,28 +881,33 @@ $(function () {
         },
         // Определить RFID карту
         getCard = function () {
-            card = {
-                Id:1,
-                Active: true,
-                Number: '039,02783',
-                AutoNumber: 'АЕ 0311 АВ',
-                Debitor: 101635,
-                AutoModel: 'НЕМАН 52012 050',
-            };
+            //rfid.card = {
+            //    Id: 1,
+            //    Active: true,
+            //    Number: '039,02783',
+            //    AutoNumber: 'АЕ 0311 АВ',
+            //    Debitor: 101635,
+            //    AutoModel: 'НЕМАН 52012 050',
+            //};
         },
         // Определить параметры емкости
         getTank = function () {
-            dens.val('820.0');
+            if (tank) {
+                if (tank.mass > 0 && tank.volume > 0) {
+                    var densite = tank.mass / tank.volume * 1000;
+                    dens.val(densite.toFixed(5));
+                }
+            }
         },
         // Показать RFID карту
         viewCard = function () {
             // Вывести инфу по карте
-            if (card) {
-                active_card.prop('checked', card.Active);
-                num_card.val(card.Number);
-                num_car.val(card.AutoNumber);
-                debitor.val(card.Debitor);
-                //$('#deliver-AutoModel').val(card.AutoModel).addClass('input_view');
+            if (rfid.card) {
+                active_card.prop('checked', rfid.card.Active);
+                num_card.val(rfid.card.Number);
+                num_car.val(rfid.card.AutoNumber);
+                debitor.val(rfid.card.Debitor);
+                //$('#deliver-AutoModel').val(rfid.card.AutoModel).addClass('input_view');
             } else {
                 active_card.prop('checked', false);
                 num_card.val('');
@@ -940,10 +933,66 @@ $(function () {
             return null;
         },
         //--------------------------------------------
+        // FuelSale
+        getNewFuelSale = function (num) {
+            var current_date = new Date();
+            var variant = variant_sap.val();
+            if (variant === "-1" && deliver.prop('checked')) {
+                variant = "7";
+            }
+            var user = user_tsk !== null ? user_tsk.UserName : '?';
+            // Получить новую строку
+            var new_fs = {
+                id: 0,
+                Out_Type: num,
+                Target_Volume: volume.val(),
+                Target_Dens: dens.val(),
+                Target_Mass: mass.val(),
+                User: user,
+                Crated_Date: toISOStringTZ(current_date),
+                Start_Counter: null,
+                Start_Level: null,
+                Start_Volume: null,
+                Start_Mass: null,
+                Start_Dens: null,
+                Start_Temp: null,
+                Start_Water: null,
+                Start_Date: null,
+                End_Counter: null,
+                End_Level: null,
+                End_Volume: null,
+                End_Mass: null,
+                End_Dens: null,
+                End_Temp: null,
+                End_Water: null,
+                End_Date: null,
+                close: null,
+                RFID: variant !== "7" ? num_card.val() : null,
+                FLAG_R: variant,
+                N_TREB: variant !== "7" ? sap_num.val() : null,
+                RSPOS: variant === "3" ? sap_num_pos_select.val() : variant === "2" ? sap_num_pos_reserv_select.val() : variant !== "4" && variant !== "7" ? sap_num_pos.val() : null,
+                N_BAK: 1,
+                OZM_BAK: sap_ozm_bak.val(),
+                OZM_TREB: variant === "4" ? sap_ozm_select.val() : variant !== "7" ? sap_ozm.val() : null,
+                PLOTNOST: null,
+                VOLUME: null,
+                MASS: null,
+                LOGIN_R: user,
+                LOGIN_EXP: variant !== "7" ? sap_name_forwarder.val() : null,
+                N_POST: variant !== "7" ? sap_num_kpp.val() : null,
+                TRANSP_FAKT: variant !== "7" ? sap_num_ts.val() : null,
+                LGORT: variant === "4" ? sap_stock_recipient_select.val() : null,
+                WERKS: variant === "4" ? sap_factory_recipient_select.val() : null,
+                N_DEB: variant === "5" || variant === "6" ? debitor.val() : null,
+                sending: null
+            };
+            return new_fs;
+        },
+        //--------------------------------------------
         // Загрузка библиотек
         loadReference = function (callback) {
             LockScreen('Инициализация данных');
-            var count = 2;
+            var count = 5;
             tsk.load(['catalog_ozm', 'catalog_depots', 'catalog_werks'], function () {
                 count -= 1;
                 if (count <= 0) {
@@ -963,6 +1012,39 @@ $(function () {
                         }
                     }
                 });
+            // Определим наличие не открытых
+            tsk.getOpenFuelSale(num_select,
+                function (result_id_open) {
+                    open_fuel_sale = result_id_open;
+                    count -= 1;
+                    if (count <= 0) {
+                        if (typeof callback === 'function') {
+                            callback();
+                        }
+                    }
+                });
+            // Определим rfid карту
+            opc.getTagsRFID(
+                function (result_rfid) {
+                    rfid = result_rfid;
+                    count -= 1;
+                    if (count <= 0) {
+                        if (typeof callback === 'function') {
+                            callback();
+                        }
+                    }
+                });
+            // Определим rfid карту
+            opc.getTagsTank(
+                function (result_tank) {
+                    tank = result_tank;
+                    count -= 1;
+                    if (count <= 0) {
+                        if (typeof callback === 'function') {
+                            callback();
+                        }
+                    }
+                });
         };
 
     //=======================================================================
@@ -970,17 +1052,19 @@ $(function () {
     //=======================================================================
     // Загрузка библиотек
     loadReference(function (result) {
-        var num_trk = (vars !== null && vars.num !== null && (Number(vars.num) > 0 && Number(vars.num) < 3) ? Number(vars.num) : 0);
-        init(num_trk, function () {
-            //if ()
-
+        // Создадим класс лог
+        log = new LOG_API(blog, user_tsk !== null ? user_tsk.UserName : '?');
+        init(num_select, function () {
             variant_sap.val(default_mode).selectmenu("refresh").selectmenu("enable"); // Сбросили выбор вариантов
             viewVariant(default_mode);
-            if (blog) {
-                log.logInfo(user_tsk !== null ? user_tsk.UserName : '?',
-                    'Инициализация завершена, режим по умолчанию: ' + default_mode);
-            }
+            log.logInfo('Инициализация завершена, режим по умолчанию: ' + default_mode);
             LockScreenOff();
+            if (open_fuel_sale !== null) {
+                button_ok.hide();
+                variant_sap.selectmenu("refresh").selectmenu("disable"); // выбор вариантов
+                button_sap_tr.hide();
+                updateTips('!ВНИМАНИЕ. Перед настройкой новой выдачи закройте предыдущую выдачу id=' + open_fuel_sale.id + ' дата создания:' + open_fuel_sale.Crated_Date + ' cоздал оператор:' + open_fuel_sale.User);
+            }
         });
 
 

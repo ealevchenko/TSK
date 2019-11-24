@@ -187,6 +187,7 @@
     <Compile Include="Controllers\api\CatalogController.cs" />
     <Compile Include="Controllers\api\FuelSaleController.cs" />
     <Compile Include="Controllers\api\LogController.cs" />
+    <Compile Include="Controllers\api\OPCController.cs" />
     <Compile Include="Controllers\api\SAPController.cs" />
     <Compile Include="Controllers\api\SettingsController.cs" />
     <Compile Include="Controllers\api\UsersChangesController.cs" />
@@ -316,6 +317,7 @@
     <Content Include="Scripts\popper.min.js" />
     <Content Include="Scripts\shared\common.js" />
     <Content Include="Scripts\shared\log_api.js" />
+    <Content Include="Scripts\shared\opc_api.js" />
     <Content Include="Scripts\shared\sap_api.js" />
     <Content Include="Scripts\shared\tsk_api.js" />
     <Content Include="Scripts\umd\popper-utils.js" />
@@ -364,9 +366,17 @@
     <TypeScriptCompile Include="Scripts\index.d.ts" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ClientOPCTRK\ClientOPCTRK.csproj">
+      <Project>{cc3ab0de-73ad-44dd-ac2d-366c45f36555}</Project>
+      <Name>ClientOPCTRK</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ClientSAPTRK\ClientSAPTRK.csproj">
       <Project>{8377fb48-350b-47c5-8035-36f4516019ad}</Project>
       <Name>ClientSAPTRK</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EFDCFuel\EFDCFuel.csproj">
+      <Project>{e783bd84-1fe1-4bb8-84bb-c8a43f5adcd6}</Project>
+      <Name>EFDCFuel</Name>
     </ProjectReference>
     <ProjectReference Include="..\EFFCK\EFFCK.csproj">
       <Project>{7da2efa7-8d88-4c50-ba3c-8eea7321062f}</Project>

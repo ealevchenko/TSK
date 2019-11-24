@@ -19,7 +19,9 @@ $.extend({
         return $.getUrlVars()[name];
     }
 });
-
+/* ----------------------------------------------------------
+    Функции работы с компонентами jQuery UI
+-------------------------------------------------------------*/
 // Инициализация компонента Select JQuery UI компонент
 var initSelect = function (obj_select, property, data, callback_option, value_select, event_change, exceptions_value) {
     var options = [];
@@ -88,7 +90,6 @@ var updateOptionSelect = function (obj_select, data, callback_option, value_sele
         .val(value_select)
         .selectmenu("refresh");
 };
-
 /* ----------------------------------------------------------
     Функции работы с масивами
 -------------------------------------------------------------*/
@@ -163,12 +164,9 @@ var AJAXComplete = function () {
 var OnAJAXErrorOfMessage = function (message) {
     updateTips(message);
 };
-
-// Коррекция вывода даты с учетом зоны
-var toISOStringTZ = function (date) {
-    return new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString();
-};
-
+/* ----------------------------------------------------------
+    Функции блокировки  экрана
+-------------------------------------------------------------*/
 // Блокировать с текстом
 var LockScreen = function (message) {
     var lock = document.getElementById('lockPanel');
@@ -181,4 +179,11 @@ var LockScreenOff = function () {
     var lock = document.getElementById('lockPanel');
     if (lock)
         lock.className = 'LockOff';
+};
+/* ----------------------------------------------------------
+    Вспомогательные функции
+-------------------------------------------------------------*/
+// Коррекция вывода даты с учетом зоны
+var toISOStringTZ = function (date) {
+    return new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString();
 };

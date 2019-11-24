@@ -1,7 +1,10 @@
 ﻿
-var LOG_API = function () {
-
+var LOG_API = function (enabled, user) {
+    this.enabled = enabled;
+    this.user = user;
 };
+
+
 
 /* ----------------------------------------------------------
 AJAX функции
@@ -32,7 +35,7 @@ LOG_API.prototype.postLog = function (log, callback) {
 };
 
 // Лог информация
-LOG_API.prototype.logInfo = function (user, message) {
+LOG_API.prototype.SavelogInfo = function (user, message) {
     var log = {
         ID: 0,
         DateTime: toISOStringTZ(new Date()),
@@ -47,7 +50,7 @@ LOG_API.prototype.logInfo = function (user, message) {
     );
 };
 // Лог внимание
-LOG_API.prototype.logWarn = function (user, message) {
+LOG_API.prototype.SavelogWarn = function (user, message) {
     var log = {
         ID: 0,
         DateTime: toISOStringTZ(new Date()),
@@ -62,7 +65,7 @@ LOG_API.prototype.logWarn = function (user, message) {
     );
 };
 // Лог ошибка
-LOG_API.prototype.logError = function (user, message) {
+LOG_API.prototype.SavelogError = function (user, message) {
     var log = {
         ID: 0,
         DateTime: toISOStringTZ(new Date()),
@@ -77,7 +80,7 @@ LOG_API.prototype.logError = function (user, message) {
     );
 };
 // Лог отладка
-LOG_API.prototype.logDebug = function (user, message) {
+LOG_API.prototype.SavelogDebug = function (user, message) {
     var log = {
         ID: 0,
         DateTime: toISOStringTZ(new Date()),
@@ -92,7 +95,7 @@ LOG_API.prototype.logDebug = function (user, message) {
     );
 };
 // Лог события системы
-LOG_API.prototype.logEvent = function (user, message) {
+LOG_API.prototype.SavelogEvent = function (user, message) {
     var log = {
         ID: 0,
         DateTime: toISOStringTZ(new Date()),
@@ -105,4 +108,24 @@ LOG_API.prototype.logEvent = function (user, message) {
 
         }
     );
+};
+// Лог информация
+LOG_API.prototype.logInfo = function (message) {
+    if (this.enabled) { LOG_API.prototype.SavelogInfo(this.user, message); }
+};
+//
+LOG_API.prototype.logWarn = function (message) {
+    if (this.enabled) { LOG_API.prototype.SavelogWarn(this.user, message); }
+};
+//
+LOG_API.prototype.logError = function (message) {
+    if (this.enabled) { LOG_API.prototype.SavelogError(this.user, message); }
+};
+//
+LOG_API.prototype.logDebug = function (message) {
+    if (this.enabled) { LOG_API.prototype.SavelogDebug(this.user, message); }
+};
+//
+LOG_API.prototype.logEvent = function (message) {
+    if (this.enabled) { LOG_API.prototype.SavelogEvent(this.user, message); }
 };

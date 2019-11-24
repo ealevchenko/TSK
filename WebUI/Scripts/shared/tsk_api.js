@@ -249,3 +249,52 @@ TSK_API.prototype.getCat_Werks = function (callback) {
         },
     });
 };
+//======= FuelSale ==========================================
+// Получить открытую строку из базы данных
+TSK_API.prototype.getOpenFuelSale = function (num, callback) {
+    $.ajax({
+        type: 'GET',
+        url: '../../api/tsk/fuel_sale/open/num/' + num,
+        async: true,
+        dataType: 'json',
+        beforeSend: function () {
+            AJAXBeforeSend();
+        },
+        success: function (data) {
+            if (typeof callback === 'function') {
+                callback(data);
+            }
+        },
+        error: function (x, y, z) {
+            OnAJAXError(x, y, z);
+        },
+        complete: function () {
+            AJAXComplete();
+        },
+    });
+};
+//Добавить FuelSale
+TSK_API.prototype.postFuelSale = function (fuel_sale, callback) {
+    $.ajax({
+        url: '../../api/tsk/fuel_sale',
+        type: 'POST',
+        data: JSON.stringify(fuel_sale),
+        contentType: "application/json;charset=utf-8",
+        async: true,
+        beforeSend: function () {
+            AJAXBeforeSend();
+        },
+        success: function (data) {
+            if (typeof callback === 'function') {
+                callback(data);
+            }
+        },
+        error: function (x, y, z) {
+            LockScreenOff();
+            OnAJAXError(x, y, z);
+        },
+        complete: function () {
+            AJAXComplete();
+        },
+    });
+};
