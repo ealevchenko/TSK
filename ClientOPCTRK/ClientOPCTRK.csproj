@@ -61,11 +61,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\EFDCFuel\EFDCFuel.csproj">
       <Project>{e783bd84-1fe1-4bb8-84bb-c8a43f5adcd6}</Project>
       <Name>EFDCFuel</Name>
@@ -74,6 +69,9 @@
       <Project>{2ae0080b-7e15-4c79-842c-35e52fc945fa}</Project>
       <Name>LogFile</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

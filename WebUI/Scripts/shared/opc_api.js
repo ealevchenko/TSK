@@ -18,6 +18,9 @@ OPC_API.prototype.getTagsRFID = function (callback) {
         },
         error: function (x, y, z) {
             OnAJAXError(x, y, z);
+            if (typeof callback === 'function') {
+                callback(null);
+            }
         },
         complete: function () {
             AJAXComplete();
@@ -41,6 +44,9 @@ OPC_API.prototype.getTagsTank = function (callback) {
         },
         error: function (x, y, z) {
             OnAJAXError(x, y, z);
+            if (typeof callback === 'function') {
+                callback(null);
+            }
         },
         complete: function () {
             AJAXComplete();

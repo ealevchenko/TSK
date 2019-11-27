@@ -152,7 +152,7 @@ var AJAXBeforeSend = function () {
 var OnAJAXError = function (x, y, z) {
     //LockScreenOff();
     if (x.status !== 404) {
-        alert(x + '\n' + y + '\n' + z);
+        alert(x.status + '\n' + y + '\n' + z);
     }
     //LockScreenOff();
 };

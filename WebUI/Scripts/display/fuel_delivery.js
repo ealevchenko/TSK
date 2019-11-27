@@ -1,5 +1,6 @@
 ﻿//=========== ЗАГРУЗКА СТРАНИЦЫ СТАРТ ПРОЕКТА ====================================================
-$(function () {
+// Загрузка документа
+$(document).ready(function () {
     //=======================================================================
     // Обявление глобальных переменных
     //=======================================================================
@@ -283,7 +284,7 @@ $(function () {
                     tsk.postFuelSale(new_fuel_sale, function (result_id) {
                         if (result_id > 0) {
                             // Закрыть форму
-                            log.logInfo('Добавлена новая строка fuelsale = ' + JSON.stringify(new_fuel_sale)+ ', id новой строки='+result_id);
+                            log.logInfo('Добавлена новая строка fuelsale = ' + JSON.stringify(new_fuel_sale) + ', id новой строки=' + result_id);
                             tsk.putSettingDisplay_fd(0,
                                 function (result_close) {
                                     log.logInfo('Панель оператора "' + title + '" - закрыта, result=' + result_close);
@@ -765,7 +766,7 @@ $(function () {
                     sap_stock_recipient_tr.show(); sap_stock_recipient.attr('disabled', 'disabled').show(); label_sap_stock_recipient.text('Склад получателя из резервирования :');
                     sap_factory_recipient_tr.show(); sap_factory_recipient.attr('disabled', 'disabled').show(); label_sap_factory_recipient.text('Завод-получатель :');
                     sap_id_card_tr.show(); label_sap_id_card.text('ИД карта :');
-                    if (rfid.card) {
+                    if (rfid && rfid.card) {
                         sap_num_ts.val(rfid.card.AutoNumber);
                         sap_id_card.val(rfid.card.Id);
                     }
@@ -786,7 +787,7 @@ $(function () {
                     sap_ozm_amount_tr.show(); label_sap_ozm_amount.text('Количество :');
                     sap_stock_recipient_tr.show(); sap_stock_recipient.attr('disabled', 'disabled').show(); label_sap_stock_recipient.text('Склад получателя = Получатель материала в ИП :');
 
-                    if (rfid.card) {
+                    if (rfid && rfid.card) {
                         sap_num_ts.val(rfid.card.AutoNumber);
                     }
                     break;
@@ -810,7 +811,7 @@ $(function () {
                     sap_factory_recipient_select.selectmenu("widget").show();
                     //sap_factory_recipient_select.val(-1).selectmenu("refresh");
                     label_sap_factory_recipient.text('Завод-получатель :');
-                    if (rfid.card) {
+                    if (rfid && rfid.card) {
                         sap_num_ts.val(rfid.card.AutoNumber);
                     }
                     break;
@@ -831,7 +832,7 @@ $(function () {
                     sap_stock_recipient_tr.show(); sap_stock_recipient.attr('disabled', 'disabled').show(); label_sap_stock_recipient.text('Склад получателя из резервирования :');
                     sap_factory_recipient_tr.show(); sap_factory_recipient.attr('disabled', 'disabled').show(); label_sap_factory_recipient.text('Завод-получатель :');
                     sap_id_card_tr.show(); label_sap_id_card.text('ИД карта :');
-                    if (rfid.card) {
+                    if (rfid && rfid.card) {
                         sap_num_ts.val(rfid.card.AutoNumber);
                         //sap_num_ts.val(rfid.card.Debitor + '/' + rfid.card.AutoNumber + '/' + rfid.card.AutoModel);
                         sap_id_card.val(rfid.card.Id);
@@ -854,7 +855,7 @@ $(function () {
                     sap_stock_recipient_tr.show(); sap_stock_recipient_tr.show(); sap_stock_recipient.attr('disabled', 'disabled').show(); label_sap_stock_recipient.text('Склад получателя из резервирования :');
                     sap_factory_recipient_tr.show(); sap_factory_recipient.attr('disabled', 'disabled').show(); label_sap_factory_recipient.text('Завод-получатель :');
                     sap_id_card_tr.show(); label_sap_id_card.text('ИД карта :');
-                    if (rfid.card) {
+                    if (rfid && rfid.card) {
                         //sap_num_ts.val(rfid.card.Debitor + '/' + rfid.card.AutoNumber + '/' + rfid.card.AutoModel)
                         sap_num_ts.val(rfid.card.AutoNumber);
                         sap_id_card.val(rfid.card.Id);
@@ -902,7 +903,7 @@ $(function () {
         // Показать RFID карту
         viewCard = function () {
             // Вывести инфу по карте
-            if (rfid.card) {
+            if (rfid && rfid.card) {
                 active_card.prop('checked', rfid.card.Active);
                 num_card.val(rfid.card.Number);
                 num_car.val(rfid.card.AutoNumber);
@@ -994,6 +995,7 @@ $(function () {
             LockScreen('Инициализация данных');
             var count = 5;
             tsk.load(['catalog_ozm', 'catalog_depots', 'catalog_werks'], function () {
+                //alert("load");
                 count -= 1;
                 if (count <= 0) {
                     if (typeof callback === 'function') {
@@ -1004,10 +1006,12 @@ $(function () {
             // Определим пользователя и смену
             tsk.getLastUsersChanges(
                 function (result_user_tsk) {
+                    //alert("getLastUsersChanges");
                     user_tsk = result_user_tsk;
                     count -= 1;
                     if (count <= 0) {
                         if (typeof callback === 'function') {
+                            
                             callback();
                         }
                     }
@@ -1015,10 +1019,12 @@ $(function () {
             // Определим наличие не открытых
             tsk.getOpenFuelSale(num_select,
                 function (result_id_open) {
+                    //alert("getOpenFuelSale");
                     open_fuel_sale = result_id_open;
                     count -= 1;
                     if (count <= 0) {
                         if (typeof callback === 'function') {
+                            
                             callback();
                         }
                     }
@@ -1026,6 +1032,7 @@ $(function () {
             // Определим rfid карту
             opc.getTagsRFID(
                 function (result_rfid) {
+                    //alert("getTagsRFID");
                     rfid = result_rfid;
                     count -= 1;
                     if (count <= 0) {
@@ -1037,16 +1044,19 @@ $(function () {
             // Определим rfid карту
             opc.getTagsTank(
                 function (result_tank) {
+                    //alert("getTagsTank");
                     tank = result_tank;
                     count -= 1;
                     if (count <= 0) {
                         if (typeof callback === 'function') {
+
                             callback();
                         }
                     }
                 });
         };
 
+    //alert("Старт");
     //=======================================================================
     // Запуск
     //=======================================================================
@@ -1054,7 +1064,9 @@ $(function () {
     loadReference(function (result) {
         // Создадим класс лог
         log = new LOG_API(blog, user_tsk !== null ? user_tsk.UserName : '?');
+        //alert("log");
         init(num_select, function () {
+            //alert("init-end");
             variant_sap.val(default_mode).selectmenu("refresh").selectmenu("enable"); // Сбросили выбор вариантов
             viewVariant(default_mode);
             log.logInfo('Инициализация завершена, режим по умолчанию: ' + default_mode);
@@ -1066,11 +1078,8 @@ $(function () {
                 updateTips('!ВНИМАНИЕ. Перед настройкой новой выдачи закройте предыдущую выдачу id=' + open_fuel_sale.id + ' дата создания:' + open_fuel_sale.Crated_Date + ' cоздал оператор:' + open_fuel_sale.User);
             }
         });
-
-
-        //    // Загрузка документа
-        //    $(document).ready(function () {
-
-        //    });
     });
+    //$(function () {
+
+    //});
 });
