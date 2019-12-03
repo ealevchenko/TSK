@@ -288,6 +288,7 @@ $(document).ready(function () {
                             tsk.putSettingDisplay_fd(0,
                                 function (result_close) {
                                     log.logInfo('Панель оператора "' + title + '" - закрыта, result=' + result_close);
+                                    window.close();
                                 });
                         } else {
                             updateTips("ОШИБКА создания новой строки fuelsale, код ошибки=" + result_id);
@@ -306,9 +307,11 @@ $(document).ready(function () {
             button_cancel = $('button#button-cancel').on('click', function () {
                 event.preventDefault();
                 LockScreen('Форма закрывается...');
+                
                 tsk.putSettingDisplay_fd(0,
                     function (result) {
                         log.logInfo('Панель оператора "' + title + '" - Нажата кнопка [Cancel]');
+                        window.close();
                     });
             });
             // Установим признак открытого окна
