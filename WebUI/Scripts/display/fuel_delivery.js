@@ -1077,6 +1077,7 @@ $(document).ready(function () {
             if (open_fuel_sale !== null) {
                 button_ok.hide();
                 variant_sap.selectmenu("refresh").selectmenu("disable"); // выбор вариантов
+                deliver.attr('disabled', 'disabled');
                 button_sap_tr.hide();
                 updateTips('!ВНИМАНИЕ. Перед настройкой новой выдачи закройте предыдущую выдачу id=' + open_fuel_sale.id + ' дата создания:' + open_fuel_sale.Crated_Date + ' cоздал оператор:' + open_fuel_sale.User);
             }
