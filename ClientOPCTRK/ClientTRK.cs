@@ -71,8 +71,8 @@ namespace ClientOPCTRK
                 EFazsCards ef_card = new EFazsCards();
                 if (res != null)
                 {
-                    //UInt16? part1 = res[0].Value != null ? res[0].Value as UInt16? : 37; 
-                    //UInt16? part2 = res[1].Value != null ? res[1].Value as UInt16? : 50907;       
+                    //UInt16? part1 = res[0].Value != null ? res[0].Value as UInt16? : 37;
+                    //UInt16? part2 = res[1].Value != null ? res[1].Value as UInt16? : 50907;
                     UInt16? part1 = res[0].Value != null ? res[0].Value as UInt16? : null;
                     UInt16? part2 = res[1].Value != null ? res[1].Value as UInt16? : null;
                     if (part1 != null && part2 != null)
@@ -84,7 +84,10 @@ namespace ClientOPCTRK
                             int code1 = int.Parse(part1.ToString());
                             int code2 = int.Parse(part2.ToString());
                             String.Format("Определим ID=карты code1={0}, code2={1}", code1, code2).SaveInformation();
-                            azsCards card = ef_card.Get().Where(c => c.Number == (code1).ToString("000") + "," + (code2).ToString("00000")).FirstOrDefault();
+                            azsCards card = ef_card.Get().Where(c => c.Number == (code1).ToString() + "," + (code2).ToString("00000")).FirstOrDefault();
+                            if (card == null) { 
+                                card = ef_card.Get().Where(c => c.Number == (code1).ToString("000") + "," + (code2).ToString("00000")).FirstOrDefault();
+                            }
                             rfid.card = card;
                         }
 
