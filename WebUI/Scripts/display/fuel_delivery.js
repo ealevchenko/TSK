@@ -1052,7 +1052,6 @@ $(document).ready(function () {
                     count -= 1;
                     if (count <= 0) {
                         if (typeof callback === 'function') {
-
                             callback();
                         }
                     }
@@ -1068,12 +1067,14 @@ $(document).ready(function () {
         // Создадим класс лог
         log = new LOG_API(blog, user_tsk !== null ? user_tsk.UserName : '?');
         //alert("log");
+        log.logInfo('Инициализация начата');
         init(num_select, function () {
             //alert("init-end");
             variant_sap.val(default_mode).selectmenu("refresh").selectmenu("enable"); // Сбросили выбор вариантов
             viewVariant(default_mode);
             log.logInfo('Инициализация завершена, режим по умолчанию: ' + default_mode);
             LockScreenOff();
+            log.logInfo('open_fuel_saleopen_fuel_sale: ' + open_fuel_sale);
             if (open_fuel_sale !== null) {
                 button_ok.hide();
                 variant_sap.selectmenu("refresh").selectmenu("disable"); // выбор вариантов
@@ -1083,7 +1084,4 @@ $(document).ready(function () {
             }
         });
     });
-    //$(function () {
-
-    //});
 });

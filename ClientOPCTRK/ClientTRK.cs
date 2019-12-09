@@ -84,8 +84,9 @@ namespace ClientOPCTRK
                             int code1 = int.Parse(part1.ToString());
                             int code2 = int.Parse(part2.ToString());
                             String.Format("Определим ID=карты code1={0}, code2={1}", code1, code2).SaveInformation();
-                            azsCards card = ef_card.Get().Where(c => c.Number == (code1).ToString() + "," + (code2).ToString("00000")).FirstOrDefault();
-                            if (card == null) { 
+                            azsCards card = ef_card.Get().Where(c => c.Number == (code1).ToString("00") + "," + (code2).ToString("00000")).FirstOrDefault();
+                            if (card == null)
+                            {
                                 card = ef_card.Get().Where(c => c.Number == (code1).ToString("000") + "," + (code2).ToString("00000")).FirstOrDefault();
                             }
                             rfid.card = card;
