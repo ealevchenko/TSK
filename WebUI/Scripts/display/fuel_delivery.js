@@ -513,7 +513,7 @@ $(document).ready(function () {
                                                 supply = result;
                                                 var pos = [];
                                                 for (i = 0, count_result_supply = result.length; i < count_result_supply; i++) {
-                                                    pos.push({ value: result[i].posnr, text: result[i].posnr });
+                                                    pos.push({ value: result[i].POSNR, text: result[i].POSNR });
                                                 };
                                                 // Обновим перечень позиций
                                                 updateOptionSelect(sap_num_pos_select, pos, null, -1, null);

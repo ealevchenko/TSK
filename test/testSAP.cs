@@ -46,8 +46,8 @@ namespace test
 
             foreach (Supply p in list_sypply)
             {
-                Console.WriteLine("vbeln = {0}", p.vbeln);
-                Console.WriteLine("posnr = {0}", p.posnr);
+                Console.WriteLine("vbeln = {0}", p.VBELN);
+                Console.WriteLine("posnr = {0}", p.POSNR);
                 Console.WriteLine("MATNR = {0}", p.MATNR);
                 Console.WriteLine("WERKS = {0}", p.WERKS);
                 Console.WriteLine("LGORT = {0}", p.LGORT);

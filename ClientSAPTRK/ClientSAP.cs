@@ -27,8 +27,8 @@ namespace ClientSAPTRK
 
     public class Supply
     {
-        public string vbeln { get; set; }
-        public string posnr { get; set; }
+        public string VBELN { get; set; }
+        public string POSNR { get; set; }
         public string MATNR { get; set; }
         public string WERKS { get; set; }
         public string LGORT { get; set; }
@@ -249,8 +249,8 @@ namespace ClientSAPTRK
                 {
                     Supply sypply = new Supply()
                     {
-                        vbeln = (string)element.Element("vbeln"),
-                        posnr = (string)element.Element("posnr"),
+                        VBELN = (string)element.Element("VBELN"),
+                        POSNR = (string)element.Element("POSNR"),
                         MATNR = (string)element.Element("MATNR"),
                         WERKS = (string)element.Element("WERKS"),
                         LGORT = (string)element.Element("LGORT"),
