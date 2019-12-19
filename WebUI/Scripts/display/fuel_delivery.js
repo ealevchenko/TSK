@@ -922,7 +922,7 @@ $(document).ready(function () {
         },
         // Получить поставку
         getPosSupply = function (pos) {
-            var sup = getObjects(supply, 'posnr', pos);
+            var sup = getObjects(supply, 'POSNR', pos);
             if (sup !== null && sup.length > 0) {
                 return sup[0];
             }
