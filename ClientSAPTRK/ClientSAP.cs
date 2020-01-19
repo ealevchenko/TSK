@@ -46,6 +46,7 @@ namespace ClientSAPTRK
         protected string transaction_supply = null;
         protected string login;
         protected string pass;
+        protected string sttn;
 
         public ClientSAP()
         {
@@ -56,6 +57,8 @@ namespace ClientSAPTRK
                 this.transaction_supply = ConfigurationManager.AppSettings["sap_transaction_supply"].ToString();
                 this.login = ConfigurationManager.AppSettings["sap_login"].ToString();
                 this.pass = ConfigurationManager.AppSettings["sap_pass"].ToString();
+                this.sttn = ConfigurationManager.AppSettings["STTN"].ToString();
+
             }
             catch (Exception e)
             {
@@ -122,7 +125,7 @@ namespace ClientSAPTRK
                 string message = this.url + this.transaction_reservation +
                     "&RSNUM=" + num +
                     "&RSPOS=" + pos +
-                    "&STTN=101" +
+                    "&STTN=" + this.sttn +
                     "&FLAG_R=" + mode +
                     "&OutputParameter=RSLT" +
                     "&XacuteLoginName=" + this.login +
@@ -172,8 +175,8 @@ namespace ClientSAPTRK
                 string message = this.url + this.transaction_reservation +
                     "&RSNUM=" + num +
                     "&RSPOS="+
-                    "&STTN=101" +
-                    "&MATNR="+ matrn +
+                    "&STTN=" + this.sttn +
+                    "&MATNR=" + matrn +
                     "&FLAG_R=" + mode +
                     "&OutputParameter=RSLT" +
                     "&XacuteLoginName=" + this.login +
@@ -291,7 +294,7 @@ namespace ClientSAPTRK
                     ////"&RSPOS=1" +
                     "&KUNNR=" + debitor +
                     "&MATNR=" + ozm +
-                    "&STTN=101" +
+                    "&STTN=" + this.sttn +
                     "&FLAG_R=" + mode +
                     "&OutputParameter=RSLT" +
                     "&XacuteLoginName=" + this.login +
@@ -352,7 +355,7 @@ namespace ClientSAPTRK
                     "&RSPOS=" +
                     "&KUNNR=" + debitor +
                     "&MATNR=" + ozm +
-                    "&STTN=101" +
+                    "&STTN=" + this.sttn +
                     "&FLAG_R=" + mode +
                     "&MENGE=" + mass.ToString("0.##")+
                     "&MENGE_L=" + valume.ToString("0.##") + 
@@ -412,7 +415,7 @@ namespace ClientSAPTRK
                     "&KUNNR=" +
                     "&MATNR=" +
                     "&OTFT=" + num +
-                    "&STTN=101" +
+                    "&STTN=" + this.sttn +
                     "&FLAG_R=" + mode +
                     "&MENGE=" + 
                     "&MENGE_L=" + 
