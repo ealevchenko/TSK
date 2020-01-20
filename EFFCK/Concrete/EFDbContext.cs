@@ -13,24 +13,26 @@ namespace EFFCK.Concrete
         {
         }
 
-        public virtual DbSet<Daily_ReportRW> Daily_ReportRW { get; set; }
-        public virtual DbSet<FuelSaleRW> FuelSaleRW { get; set; }
+        public virtual DbSet<Cat_Depots> Cat_Depots { get; set; }
+        public virtual DbSet<Cat_Fuel> Cat_Fuel { get; set; }
+        public virtual DbSet<Cat_OZM_GSM> Cat_OZM_GSM { get; set; }
+        public virtual DbSet<Cat_Tanks> Cat_Tanks { get; set; }
+        public virtual DbSet<Cat_TRK> Cat_TRK { get; set; }
+        public virtual DbSet<Cat_Werks> Cat_Werks { get; set; }
+        public virtual DbSet<Daily_Accounting_Detali_Report> Daily_Accounting_Detali_Report { get; set; }
+        public virtual DbSet<Daily_Accounting_Report> Daily_Accounting_Report { get; set; }
+        public virtual DbSet<DeliveryTanks> DeliveryTanks { get; set; }
+        public virtual DbSet<FuelSale> FuelSale { get; set; }
         public virtual DbSet<Incomes> Incomes { get; set; }
+        public virtual DbSet<Logs> Logs { get; set; }
         public virtual DbSet<ManualMode> ManualMode { get; set; }
         public virtual DbSet<Outcomes> Outcomes { get; set; }
-        public virtual DbSet<ReceivingFuelRW> ReceivingFuelRW { get; set; }
+        public virtual DbSet<ReceivingTanks> ReceivingTanks { get; set; }
         public virtual DbSet<Remains> Remains { get; set; }
-        public virtual DbSet<RemainsTanksRW> RemainsTanksRW { get; set; }
-        public virtual DbSet<UsersChanges> UsersChanges { get; set; }
-
-        public virtual DbSet<FuelSale> FuelSale { get; set; }
+        public virtual DbSet<RemainsTank> RemainsTank { get; set; }
+        public virtual DbSet<RemainsTanks> RemainsTanks { get; set; }
         public virtual DbSet<Settings> Settings { get; set; }
-
-        public virtual DbSet<Cat_Depots> Cat_Depots { get; set; }
-        public virtual DbSet<Cat_OZM_GSM> Cat_OZM_GSM { get; set; }
-        public virtual DbSet<Cat_Werks> Cat_Werks { get; set; }
-
-        public virtual DbSet<Logs> Logs { get; set; }
+        public virtual DbSet<UsersChanges> UsersChanges { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -40,82 +42,10 @@ namespace EFFCK.Concrete
                 .HasForeignKey(e => e.parent_id)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<FuelSaleRW>()
-                .Property(e => e.dose)
-                .HasPrecision(9, 3);
-
-            modelBuilder.Entity<FuelSaleRW>()
+            modelBuilder.Entity<DeliveryTanks>()
                 .Property(e => e.passage)
                 .IsFixedLength()
                 .IsUnicode(false);
-
-            modelBuilder.Entity<FuelSaleRW>()
-                .Property(e => e.mass)
-                .HasPrecision(10, 3);
-
-            modelBuilder.Entity<FuelSaleRW>()
-                .Property(e => e.dens)
-                .HasPrecision(9, 5);
-
-            modelBuilder.Entity<FuelSaleRW>()
-                .Property(e => e.temp)
-                .HasPrecision(3, 1);
-
-            modelBuilder.Entity<FuelSaleRW>()
-                .Property(e => e.mass15)
-                .HasPrecision(10, 3);
-
-            modelBuilder.Entity<FuelSaleRW>()
-                .Property(e => e.dens15)
-                .HasPrecision(9, 5);
-
-            modelBuilder.Entity<FuelSaleRW>()
-                .Property(e => e.start_level)
-                .HasPrecision(7, 1);
-
-            modelBuilder.Entity<FuelSaleRW>()
-                .Property(e => e.start_volume)
-                .HasPrecision(9, 1);
-
-            modelBuilder.Entity<FuelSaleRW>()
-                .Property(e => e.start_dens)
-                .HasPrecision(9, 5);
-
-            modelBuilder.Entity<FuelSaleRW>()
-                .Property(e => e.start_mass)
-                .HasPrecision(9, 1);
-
-            modelBuilder.Entity<FuelSaleRW>()
-                .Property(e => e.start_temp)
-                .HasPrecision(3, 1);
-
-            modelBuilder.Entity<FuelSaleRW>()
-                .Property(e => e.start_water_level)
-                .HasPrecision(6, 1);
-
-            modelBuilder.Entity<FuelSaleRW>()
-                .Property(e => e.stop_level)
-                .HasPrecision(7, 1);
-
-            modelBuilder.Entity<FuelSaleRW>()
-                .Property(e => e.stop_volume)
-                .HasPrecision(9, 1);
-
-            modelBuilder.Entity<FuelSaleRW>()
-                .Property(e => e.stop_density)
-                .HasPrecision(9, 5);
-
-            modelBuilder.Entity<FuelSaleRW>()
-                .Property(e => e.stop_mass)
-                .HasPrecision(9, 1);
-
-            modelBuilder.Entity<FuelSaleRW>()
-                .Property(e => e.stop_temp)
-                .HasPrecision(3, 1);
-
-            modelBuilder.Entity<FuelSaleRW>()
-                .Property(e => e.stop_water_level)
-                .HasPrecision(6, 1);
 
             modelBuilder.Entity<ManualMode>()
                 .Property(e => e.Level)

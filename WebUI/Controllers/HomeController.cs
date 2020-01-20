@@ -10,9 +10,14 @@ namespace WebUI.Controllers
     {
         public ActionResult Index()
         {
-            ViewBag.Title = "Home Page";
-
             return View();
         }
+        // Заправочная ведомость
+        public ActionResult FuelSale()
+        {
+            return View();
+        }
+
+
     }
 }
