@@ -16,6 +16,9 @@ namespace WebUI
             bundles.Add(new ScriptBundle("~/bundles/jquery-cookie").Include(
                         "~/Scripts/jquery.cookie.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/Ajax").Include(
+                        "~/Scripts/jquery.unobtrusive-ajax.min.js"));
+
             //jquery-ui --------------------------------------------------------------------------
             bundles.Add(new ScriptBundle("~/bundles/jquery-ui").Include(
                     "~/Scripts/jquery-ui-1.12.1.min.js"
@@ -70,15 +73,16 @@ namespace WebUI
 
             // Календарь -------------------------------------------------------------
             bundles.Add(new ScriptBundle("~/bundles/DateTime").Include(
-                "~/Scripts/DateTime/moment.min.js"
-                , "~/Scripts/DateTime/jquery.daterangepicker.min.js"
+                //"~/Scripts/DateTime/moment.min.js"
+                "~/Scripts/DateTime/jquery.daterangepicker.min.js"
                 ));
 
             bundles.Add(new StyleBundle("~/DateTime/css").Include("~/Content/DateTime/daterangepicker.css"));
 
             // Moment ---------------------------------------------------------------------------
             bundles.Add(new ScriptBundle("~/bundles/Moment").Include(
-                "~/Scripts/moment.min.js"
+                "~/Scripts/moment.min.js",
+                "~/Scripts/moment-with-locales.min.js"
                 ));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(

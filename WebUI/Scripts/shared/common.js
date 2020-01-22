@@ -156,6 +156,24 @@ var OnAJAXError = function (x, y, z) {
     }
     //LockScreenOff();
 };
+
+// Обработка ошибок
+var OnAJAXErrorMetod = function (metod, x, y, z) {
+    var status = "";
+    var status_text = "";
+    var message = "";
+
+    if (x && x.status) {
+        status = x.status;
+    }
+    if (x && x.statusText) {
+        status_text = x.statusText;
+    }
+    if (x && x.responseJSON) {
+        message = x.responseJSON.Message;
+    }
+    alert('Metod js : ' + metod + '\nStatus : ' + status + '\nStatusText : ' + status_text + '\nMessage : ' + message);
+};
 // Событие после выполнения
 var AJAXComplete = function () {
     //LockScreenOff();
@@ -187,3 +205,31 @@ var LockScreenOff = function () {
 var toISOStringTZ = function (date) {
     return new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString();
 };
+
+// Настройка language(DataTables)
+var language_table_ru = function () {
+    return {
+        "decimal": "",
+        "emptyTable": "Нет данных в таблице",
+        "info": "Отображение _START_ по _END_ из _TOTAL_ записей",
+        "infoEmpty": "Отображение 0 to 0 of 0 записей",
+        "infoFiltered": "(отфильтровано из _MAX_ всего записей)",
+        "infoPostFix": "",
+        "thousands": ".",
+        "lengthMenu": "Показать  _MENU_ записей",
+        "loadingRecords": "Загрузка...",
+        "processing": "Обработка ...",
+        "search": "Найти:",
+        "zeroRecords": "Не найдено совпадающих записей",
+        "paginate": {
+            "first": "Первая",
+            "last": "Последняя",
+            "next": "Следующая",
+            "previous": "Предыдущая"
+        },
+        "aria": {
+            "sortAscending": ": активировать сортировку столбца по возрастанию",
+            "sortDescending": ": активировать сортировку колонки по убыванию"
+        },
+    }
+}

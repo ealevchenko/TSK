@@ -109,5 +109,28 @@ namespace WebUI.Controllers.api
                 return -1;
             }
         }
+
+        // GET: api/tsk/fuel_sale/start/2020-01-10T00:00:00/stop/2020-01-20T23:59:59
+        [Route("start/{start:datetime}/stop/{stop:datetime}")]
+        [ResponseType(typeof(FuelSale))]
+        public IHttpActionResult GetFuelSale(DateTime start, DateTime stop)
+        {
+            try
+            {
+                List<FuelSale> list = this.ef_fs
+                    .Get()
+                    .Where(s => s.Start_Date >= start && s.End_Date <= stop)
+                    .ToList();
+                //if (list == null)
+                //{
+                //    return NotFound();
+                //}
+                return Ok(list);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }
