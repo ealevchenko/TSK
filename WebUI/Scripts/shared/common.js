@@ -232,4 +232,19 @@ var language_table_ru = function () {
             "sortDescending": ": активировать сортировку колонки по убыванию"
         },
     }
-}
+};
+
+// Вернуть режим
+var outMode = function (i) {
+    if (i === null) return null;
+    switch (Number(i)) {
+        case 1: return "Резер. кер.";
+        case 2: return "Резер.";
+        case 3: return "Исх. пост.";
+        case 4: return "Самовывоз";
+        case 5: return "Бак";
+        case 6: return "Цистерна";
+        case 7: return "Пролив";
+        default: return i;
+    }
+};

@@ -4,67 +4,32 @@ $(document).ready(function () {
         date_start = null,
         date_stop = null,
         tsk = new TSK_API(), // Создадим класс TSK_API
-        tabs = {
-            html_div: $("#tabs-reports"),
-            active: 0,
-            init: function () {
-                $('#link-tabs-report-1').text("ведомость");
-                //$('#link-tabs-report-2').text("");
-                this.html_div.tabs({
-                    collapsible: true,
-                    activate: function (event, ui) {
-                        tabs.active = tabs.html_div.tabs("option", "active");
-                        //tabs.activeTable(tabs.active, false);
-                    }
-                });
-                //tabs.activeTable(this.active, true);
-            },
-            activeTable: function (active, data_refresh) {
-                if (active === 0) {
-                    table_report.viewTable(data_refresh);
-                }
-                //if (active == 1) {
-                //    table_report.viewTable(data_refresh);
-                //}
-
-            }
-        },
-        // Панель таблицы
-        panel_select_report = {
-            html_div_panel: $('div#panel-select'),
-            obj: null,
+        panel_report = {
+            bt_left: $('button#bt-left'),
+            bt_right: $('button#bt-right'),
+            select_sm: $('select#select-smena'),
+            span_range_date: $('span#select-range-date'),
+            input_date: $('input#date'),
+            input_data_start: $('input#date-start'),
+            input_data_stop: $('input#date-stop'),
             obj_date: null,
-            bt_left: $('<button class="ui-button ui-widget ui-corner-all ui-button-icon-only" ><span class="ui-icon ui-icon-circle-triangle-w"></span>text</button>'),
-            bt_right: $('<button class="ui-button ui-widget ui-corner-all ui-button-icon-only" ><span class="ui-icon ui-icon-circle-triangle-e"></span>text</button>'),
-            bt_refresh: $('<button class="ui-button ui-widget ui-corner-all" ><span class="ui-icon ui-icon-refresh"></span>text</button>'),
-            bt_print: $('<button class="ui-button ui-widget ui-corner-all" ><span class="ui-icon ui-icon-refresh"></span>text</button>'),
-            label: $('<label for="date" ></label>'),
-            span: $('<span id="select-range"></span>'),
-            input_date: $('<input id="date" name="date" size="20">'),
-            select_sm: $('<select class="ui-widget-content ui-corner-all"></select>'),
-            label1: $('<label for="date" ></label>'),
-            span1: $('<span id="select-range"></span>'),
-            input_data_start: $('<input id="date-start" name="date-start" size="20">'),
-            input_data_stop: $('<input id="date-stop" name="date-stop" size="20">'),
-            list:null,
-            initObject: function () {
-                this.span.append(this.input_date);
-                obj = this.html_div_panel;
-                obj
-                    .append(this.bt_left)
-                    .append(this.label)
-                    .append(this.span)
-                    .append(this.bt_right)
-                    .append(this.select_sm)
-                    .append(this.label1.text("или выберите период"))
-                    .append(this.span1.append(this.input_data_start).append(' - ').append(this.input_data_stop));
-                this.bt_left.attr('title',' < ');
-                this.label.text("Выберите дату");
-                this.bt_right.attr('title',' > ');
-
+            obj_date_range: null,
+            init: function () {
+                //
+                panel_report.bt_left.on('click', function () {
+                    date_curent = moment(date_curent).add('days', -1);
+                    panel_report.obj_date.data('dateRangePicker').setDateRange(moment(date_curent).format('DD.MM.YYYY HH:mm:'), moment(date_curent).format('DD.MM.YYYY HH:mm:'), true);
+                    panel_report.view_report();
+                });
+                //
+                panel_report.bt_right.on('click', function () {
+                    date_curent = moment(date_curent).add('days', 1);
+                    panel_report.obj_date.data('dateRangePicker').setDateRange(moment(date_curent).format('DD.MM.YYYY HH:mm:'), moment(date_curent).format('DD.MM.YYYY HH:mm:'), true);
+                    panel_report.viewReport();
+                });
                 // Настроим выбор времени
-                initSelect(
-                    this.select_sm,
+                panel_report.select_sm = initSelect(
+                    panel_report.select_sm,
                     { width: 200 },
                     [{ value: 1, text: "Смена Д (07:00-18:59)" }, { value: 2, text: "Смена Н (19:00-06:59)" }],
                     null,
@@ -72,11 +37,11 @@ $(document).ready(function () {
                     function (event, ui) {
                         event.preventDefault();
                         // Обработать выбор смены
-                        panel_select_report.viewReport();
+                        panel_report.view_report();
                     },
                     null);
                 // настроим компонент выбора времени
-                this.obj_date = this.input_date.dateRangePicker(
+                panel_report.obj_date = panel_report.input_date.dateRangePicker(
                     {
                         language: 'ru',
                         format: 'DD.MM.YYYY',
@@ -89,15 +54,15 @@ $(document).ready(function () {
                         date_curent = obj.date1;
                     })
                     .bind('datepicker-closed', function () {
-                        panel_select_report.viewReport();
-                        //$('input#date-start').val('');
-                        //$('input#date-stop').val('');
-                        panel_select_report.select_sm.selectmenu("enable");
+                        panel_report.view_report();
+                        panel_report.select_sm.selectmenu("enable");
+                        panel_report.bt_left.prop('disabled', false);
+                        panel_report.bt_right.prop('disabled', false);
                     });
                 // Выставим текущую дату
-                this.obj_date.data('dateRangePicker').setDateRange(moment(date_curent).format('DD.MM.YYYY HH:mm:'), moment(date_curent).format('DD.MM.YYYY HH:mm:'), true);
+                panel_report.obj_date.data('dateRangePicker').setDateRange(moment(date_curent).format('DD.MM.YYYY HH:mm:'), moment(date_curent).format('DD.MM.YYYY HH:mm:'), true);
                 // настроим компонент выбора времени
-                this.obj_date1 = this.span1.dateRangePicker(
+                panel_report.obj_date_range = panel_report.span_range_date.dateRangePicker(
                     {
                         language: 'ru',
                         format: 'DD.MM.YYYY HH:mm',
@@ -107,8 +72,8 @@ $(document).ready(function () {
                             enabled: true
                         },
                         setValue: function (s, s1, s2) {
-                            $('input#date-start').val(s1);
-                            $('input#date-stop').val(s2);
+                            panel_report.input_data_start.val(s1);
+                            panel_report.input_data_stop.val(s2);
 
                         }
                     }).
@@ -117,42 +82,32 @@ $(document).ready(function () {
                         date_stop = obj.date2;
                     })
                     .bind('datepicker-closed', function () {
-                        tabs.activeTable(tabs.active, true);
-                        //$('input#date').val('');
-                        panel_select_report.select_sm.selectmenu("disable");
+                        table_report.viewTable(true);
+                        panel_report.select_sm.selectmenu("disable");
+                        panel_report.bt_left.prop('disabled', true);
+                        panel_report.bt_right.prop('disabled', true);
                     });
             },
-
-            viewReport: function () {
-                if (panel_select_report.select_sm.val() === "2") {
+            view_report: function () {
+                if (panel_report.select_sm.val() === "2") {
                     date_start = moment(date_curent).set({ 'hour': 19, 'minute': 0, 'second': 0, 'millisecond': 0 })._d;
                     date_stop = moment(date_curent).add('days', 1).set({ 'hour': 6, 'minute': 59, 'second': 59, 'millisecond': 0 })._d;
-                    //date_start = new Date(date_curent.getFullYear(), date_curent.getMonth(), date_curent.getDate(), 19, 0, 0);
-                    //date_stop = new Date(date_curent.getFullYear(), date_curent.getMonth(), date_curent.getDate() + 1, 6, 59, 59);
                 }
-                if (panel_select_report.select_sm.val() === "1") {
+                if (panel_report.select_sm.val() === "1") {
                     date_start = moment(date_curent).set({ 'hour': 7, 'minute': 0, 'second': 0, 'millisecond': 0 })._d;
                     date_stop = moment(date_curent).set({ 'hour': 18, 'minute': 59, 'second': 59, 'millisecond': 0 })._d;
-                    //date_start = new Date(date_curent.getFullYear(), date_curent.getMonth(), date_curent.getDate(), 7, 0, 0);
-                    //date_stop = new Date(date_curent.getFullYear(), date_curent.getMonth(), date_curent.getDate(), 18, 59, 59);
                 }
-//                var date_curent_start = date_start.getDate() + '.' + (date_start.getMonth() + 1) + '.' + date_start.getFullYear() + ' ' + date_start.getHours() + ':' + date_start.getMinutes();
-//                var date_curent_stop = date_stop.getDate() + '.' + (date_stop.getMonth() + 1) + '.' + date_stop.getFullYear() + ' ' + date_stop.getHours() + ':' + date_stop.getMinutes();
-                //var date_curent_start = date_start.getDate() + '.' + (date_start.getMonth() + 1) + '.' + date_start.getFullYear() + ' ' + date_start.getHours() + ':' + date_start.getMinutes();
-                //var date_curent_stop = date_stop.getDate() + '.' + (date_stop.getMonth() + 1) + '.' + date_stop.getFullYear() + ' ' + date_stop.getHours() + ':' + date_stop.getMinutes();
-
-
-                this.obj_date1.data('dateRangePicker').setDateRange(moment(date_start).format('DD.MM.YYYY HH:mm:'), moment(date_stop).format('DD.MM.YYYY HH:mm:'), true);
-                tabs.activeTable(tabs.active, true);
+                panel_report.obj_date_range.data('dateRangePicker').setDateRange(moment(date_start).format('DD.MM.YYYY HH:mm:'), moment(date_stop).format('DD.MM.YYYY HH:mm:'), true);
+                table_report.viewTable(true);
             }
         },
-        // Таблица
+        //
         table_report = {
             html_table: $('#table-report'),
             obj: null,
             select: null,
             // Инициализировать таблицу
-            initObject: function () {
+            init: function () {
                 table_report.obj = this.html_table.DataTable({
                     //"lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
                     "paging": false,
@@ -160,24 +115,58 @@ $(document).ready(function () {
                     "ordering": true,
                     "info": true,
                     "select": false,
-                    "autoWidth": true,
+                    "autoWidth": false,
                     //"filter": true,
                     //"scrollY": "600px",
                     "scrollX": true,
                     language: language_table_ru(),
-                    jQueryUI: false,
+                    jQueryUI: true,
                     "createdRow": function (row, data, index) {
-                        $(row).attr('id', data.num);
+                        $(row).attr('id', data.id);
+                        $('td', row).eq(3).addClass('td-number');
+                        $('td', row).eq(4).addClass('td-number');
+                        $('td', row).eq(5).addClass('td-number');
+                        $('td', row).eq(7).addClass('td-number');
+                    },
+
+                    "footerCallback": function (row, data, start, end, display) {
+                        var api = this.api(), data;
+                        // Remove the formatting to get integer data for summation
+                        var intVal = function (i) {
+                            return typeof i === 'string' ?
+                                i.replace(/[\$,]/g, '') * 1 :
+                                typeof i === 'number' ?
+                                    i : 0;
+                        };
+                        // Total volume
+                        total_dt_volume = api
+                            .data()
+                            .reduce(function (a, b) {
+                                return intVal(a) + intVal(b.VOLUME);
+                            }, 0);
+                        // Total mass
+                        total_dt_mass = api
+                            .data()
+                            .reduce(function (a, b) {
+                                return intVal(a) + intVal(b.MASS);
+                            }, 0);
+                        $('td#dt-volume').text(total_dt_volume.toFixed(2) + ' (л)');
+                        $('td#dt-mass').text(total_dt_mass.toFixed(2) + ' (кг)');
                     },
                     columns: [
-                        { data: "Start_Counter", title: 'Дата и время', width: "50px", orderable: true, searchable: true },
+                        { data: "Start_Date", title: 'Дата и время', width: "50px", orderable: true, searchable: true },
                         { data: "TRANSP_FAKT", title: 'Гос.Номер ТС', width: "50px", orderable: true, searchable: true },
-                        //{ data: "OZM_TREB", title: 'Вид ГСМ', width: "50px", orderable: true, searchable: true },
                         { data: "fuel_type", title: "Вид ГСМ", width: "50px", orderable: true, searchable: true },
-                        { data: "VOLUME", title: "Выдано фактически (л)", width: "50px", orderable: false, searchable: false },
-                        { data: "MASS", title: "Выдано фактически (кг)", width: "50px", orderable: false, searchable: false },
-                        { data: "PLOTNOST", title: "Плотность (кг/м3)", width: "50px", orderable: false, searchable: false },
-                        { data: "Out_Type", title: 'Out_Type', width: "50px", orderable: true, searchable: true },
+                        { data: "VOLUME", title: "Выдано фактически (л)", width: "50px", orderable: true, searchable: true },
+                        { data: "MASS", title: "Выдано фактически (кг)", width: "50px", orderable: true, searchable: true },
+                        { data: "PLOTNOST", title: "Плотность (кг/м3)", width: "50px", orderable: true, searchable: true },
+                        { data: "sap_sending", title: "Синхр. с SAP", width: "150px", orderable: true, searchable: true },
+                        { data: "Target_Volume", title: "Доза ГСМ (л)", width: "50px", orderable: true, searchable: true },
+                        { data: "FLAG_R", title: "Режим выдачи", width: "100px", orderable: true, searchable: true },
+                        { data: "Out_Type", title: "№ колонки", width: "50px", orderable: true, searchable: true },
+                        { data: "N_BAK", title: "Резервуар", width: "100px", orderable: false, searchable: true },
+                        { data: "RFID", title: "ID карты", width: "100px", orderable: true, searchable: true },
+                        { data: "User", title: "Оператор", width: "100px", orderable: true, searchable: true },
                     ],
                     dom: 'Bfrtip',
                     stateSave: false,
@@ -189,7 +178,7 @@ $(document).ready(function () {
                         {
                             text: 'Экспорт в Excel',
                             extend: 'excelHtml5',
-                            sheetName: 'Карточки вагонов',
+                            sheetName: 'Заправочная ведомость',
                             messageTop: function () {
                                 return '';
                             }
@@ -268,14 +257,14 @@ $(document).ready(function () {
                     "End_Date": data.End_Date,
                     "close": data.close,
                     "RFID": data.RFID,
-                    "FLAG_R": data.FLAG_R,
+                    "FLAG_R": outMode(data.FLAG_R),
                     "N_TREB": data.N_TREB,
                     "RSPOS": data.RSPOS,
                     "N_BAK": data.N_BAK,
                     "fuel_type": "ДТ(107000024)",
                     "OZM_BAK": data.OZM_BAK,
                     "OZM_TREB": data.OZM_TREB,
-                    "PLOTNOST": data.PLOTNOST !== null ? Number(data.PLOTNOST).toFixed(5) : null,
+                    "PLOTNOST": data.PLOTNOST !== null ? Number(data.PLOTNOST).toFixed(2) : null,
                     "VOLUME": data.VOLUME !== null ? Number(data.VOLUME).toFixed(2) : null,
                     "MASS": data.MASS !== null ? Number(data.MASS).toFixed(2) : null,
                     "LOGIN_R": data.LOGIN_R,
@@ -285,6 +274,7 @@ $(document).ready(function () {
                     "LGORT": data.LGORT,
                     "WERKS": data.WERKS,
                     "N_DEB": data.N_DEB,
+                    "sap_sending": data.sap_sending !== null ? 'Да' : 'Нет',
                     "sending": data.sending
                 };
             },
@@ -391,8 +381,7 @@ $(document).ready(function () {
         };
 
     // Инициализация
-    tabs.init();
-    panel_select_report.initObject();
-    table_report.initObject();
-    panel_select_report.viewReport();
+    panel_report.init();
+    table_report.init();
+    panel_report.view_report();
 });

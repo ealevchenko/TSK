@@ -1,59 +1,5 @@
-﻿DIV#report {
-    padding: 0;
-    margin: 20px auto;
-
-    color: #666;
-    background: White;
-}
-
-/*@media (min-width: 576px) {
-  .container {
-    max-width: 100%;
-  }
-}
-
-@media (min-width: 768px) {
-  .container {
-    max-width: 100%;
-  }
-}
-
-@media (min-width: 992px) {
-  .container {
-    max-width: 100%;
-  }
-}
-
-@media (min-width: 1200px) {
-  .container {
-    max-width: 100%;
-  }
-}*/
-
-/*.container {
-  width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: 0px;
-  margin-left: 0px;
-}*/
-
-div.report-wide {
-    width: 1600px;
-}
-div.report-narrow {
-    width: 1200px;
-}
-div.report-narrow-min {
-    width: 1000px;
-}
-div.report-narrow1 {
-    width: 1300px;
-}
-
-div.report-grafik {
-    width: 1800px;
-    
+﻿div.row h1 span{
+	color:white;
 }
 
 h1 {
@@ -63,16 +9,20 @@ h1 span{
 	color:#000;
 }
 
+.td-number {
+    text-align:right;
+}
+
 .title-foot {
     text-align:right;
     color: #0026ff;
-    font-weight: bold;
+    /*font-weight: bold;*/
 }
 
 .total-foot {
     text-align:right;
     color: #ff0000;
-    font-weight: bold;
+    /*font-weight: bold;*/
 }
 
 #table-panel button {
