@@ -193,6 +193,8 @@
     <Compile Include="Controllers\api\CatalogController.cs" />
     <Compile Include="Controllers\api\DailyAccountingDetaliReportController.cs" />
     <Compile Include="Controllers\api\DailyAccountingReportController.cs" />
+    <Compile Include="Controllers\api\ReceivingFuelController.cs" />
+    <Compile Include="Controllers\api\ReceivingTanksController.cs" />
     <Compile Include="Controllers\api\FuelSaleController.cs" />
     <Compile Include="Controllers\api\LogController.cs" />
     <Compile Include="Controllers\api\OPCController.cs" />
@@ -647,6 +649,7 @@
     <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\report\report_daily_accounting.js" />
+    <Content Include="Scripts\report\report_receiving_fuel.js" />
     <Content Include="Scripts\report\report_fuel_sale.js" />
     <Content Include="websymbols\generator_config.txt" />
     <Content Include="websymbols\stylesheet.css" />
@@ -660,6 +663,7 @@
     <Content Include="Areas\Report\Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Report\Views\Home\DailyAccountingReport.cshtml" />
+    <Content Include="Areas\Report\Views\Home\ReceivingFuel.cshtml" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />

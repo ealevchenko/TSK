@@ -13,10 +13,18 @@ namespace WebUI.Areas.Report.Controllers
         {
             return View();
         }
+
         // Суточный отчет
         public ActionResult DailyAccountingReport()
         {
             return View();
         }
+
+        // Приемка топлива
+        public ActionResult ReceivingFuel()
+        {
+            return View();
+        }
+
     }
 }

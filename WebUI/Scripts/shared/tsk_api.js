@@ -369,3 +369,51 @@ TSK_API.prototype.getDailyAccountingDetaliReportOfDateTime = function (date, fue
         },
     });
 };
+//======= ReceivingTanks ==========================================
+// Получить выдачи за период
+TSK_API.prototype.getReceivingTanksOfDateTime = function (start, stop, callback) {
+    $.ajax({
+        type: 'GET',
+        url: '../../api/tsk/receiving_tanks/start/' + toISOStringTZ(start).substring(0, 19) + '/stop/' + toISOStringTZ(stop).substring(0, 19),
+        async: true,
+        dataType: 'json',
+        beforeSend: function () {
+            AJAXBeforeSend();
+        },
+        success: function (data) {
+            if (typeof callback === 'function') {
+                callback(data);
+            }
+        },
+        error: function (x, y, z) {
+            OnAJAXErrorMetod("TSK_API.getReceivingTanksOfDateTime", x, y, z);
+        },
+        complete: function () {
+            AJAXComplete();
+        },
+    });
+};
+//======= ReceivingFuel ==========================================
+// Получить выдачи за период
+TSK_API.prototype.getReceivingFuelOfDateTime = function (start, stop, callback) {
+    $.ajax({
+        type: 'GET',
+        url: '../../api/tsk/receiving_fuel/start/' + toISOStringTZ(start).substring(0, 19) + '/stop/' + toISOStringTZ(stop).substring(0, 19),
+        async: true,
+        dataType: 'json',
+        beforeSend: function () {
+            AJAXBeforeSend();
+        },
+        success: function (data) {
+            if (typeof callback === 'function') {
+                callback(data);
+            }
+        },
+        error: function (x, y, z) {
+            OnAJAXErrorMetod("TSK_API.getReceivingFuelOfDateTime", x, y, z);
+        },
+        complete: function () {
+            AJAXComplete();
+        },
+    });
+};
