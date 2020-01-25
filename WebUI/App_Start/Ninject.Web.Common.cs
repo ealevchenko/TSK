@@ -70,6 +70,8 @@ namespace WebUI.App_Start
         {
             kernel.Bind<EFFCK.Abstract.IRepository<EFFCK.Entities.UsersChanges>>().To<EFFCK.Concrete.EFUsersChanges>();
             kernel.Bind<EFFCK.Abstract.IRepository<EFFCK.Entities.FuelSale>>().To<EFFCK.Concrete.EFFuelSale>();
+            kernel.Bind<EFFCK.Abstract.IRepository<EFFCK.Entities.Daily_Accounting_Report>>().To<EFFCK.Concrete.EFDaily_Accounting_Report>();
+            kernel.Bind<EFFCK.Abstract.IRepository<EFFCK.Entities.Daily_Accounting_Detali_Report>>().To<EFFCK.Concrete.EFDaily_Accounting_Detali_Report>();
             kernel.Bind<EFFCK.Abstract.ISettings>().To<EFFCK.Concrete.EFSettings>();
 
             kernel.Bind<EFFCK.Abstract.IRepository<EFFCK.Entities.Cat_Depots>>().To<EFFCK.Concrete.EFCat_Depots>();

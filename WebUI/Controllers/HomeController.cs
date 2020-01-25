@@ -12,12 +12,5 @@ namespace WebUI.Controllers
         {
             return View();
         }
-        // Заправочная ведомость
-        public ActionResult FuelSale()
-        {
-            return View();
-        }
-
-
     }
 }

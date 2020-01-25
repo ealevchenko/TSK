@@ -1,43 +1,54 @@
 ﻿/* CSS reset */
-body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td { 
-	margin:0;
-	padding:0;
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, textarea, p, blockquote, th, td {
+    margin: 0;
+    padding: 0;
 }
-html,body {
-	margin:0;
-	padding:0;
+
+html, body {
+    margin: 0;
+    padding: 0;
 }
+
 table {
-	border-collapse:collapse;
-	border-spacing:0;
+    border-collapse: collapse;
+    border-spacing: 0;
 }
-fieldset,img { 
-	border:0;
+
+fieldset, img {
+    border: 0;
 }
-input{
-	border:1px solid #b0b0b0;
-	padding:3px 5px 4px;
-	color:#979797;
-	/*width:190px;*/
+
+input {
+    border: 1px solid #b0b0b0;
+    padding: 3px 5px 4px;
+    color: #979797;
+    /*width:190px;*/
 }
-address,caption,cite,code,dfn,th,var {
-	font-style:normal;
-	font-weight:normal;
+
+address, caption, cite, code, dfn, th, var {
+    font-style: normal;
+    font-weight: normal;
 }
-ol,ul {
-	list-style:none;
+
+ol, ul {
+    list-style: none;
 }
-caption,th {
-	text-align:left;
+
+caption, th {
+    text-align: left;
 }
-h1,h2,h3,h4,h5,h6 {
-	font-size:100%;
-	font-weight:normal;
+
+h1, h2, h3, h4, h5, h6 {
+    font-size: 100%;
+    font-weight: normal;
 }
-q:before,q:after {
-	content:'';
+
+q:before, q:after {
+    content: '';
 }
-abbr,acronym { border:0;
+
+abbr, acronym {
+    border: 0;
 }
 
 
@@ -49,8 +60,8 @@ abbr,acronym { border:0;
 	font-size: 13px;
 }*/
 
-body{
-	background-color: transparent;
+body {
+    background-color: transparent;
     background-repeat: repeat, no-repeat;
     /*background-position: center center;*/
     background-attachment: fixed;
@@ -58,10 +69,10 @@ body{
     -moz-background-size: auto, cover;
     -o-background-size: auto, cover;
     background-size: auto, cover;
-	/*color: #fff;*/
-	/*font-family: 'Josefin Slab', Arial, sans-serif;*/
+    /*color: #fff;*/
+    /*font-family: 'Josefin Slab', Arial, sans-serif;*/
     font-family: 'Terminal Dosis', Arial, sans-serif;
-	font-size: 13px;
+    font-size: 13px;
 }
 
 .img-header-global {
@@ -79,67 +90,76 @@ body{
     background-image: url(../../Images/pattern.png), url(../../Images/report.jpg);
 }*/
 
-.container{
-	position:relative;
+.container {
+    position: relative;
 }
-a{
-	color: #fff;
-	text-decoration: none;
+
+a {
+    color: #fff;
+    text-decoration: none;
 }
-.clr{
-	clear: both;
+
+.clr {
+    clear: both;
 }
-.content{
-	position:relative;
+
+.content {
+    position: relative;
 }
-h1{
-	margin:0px;
-	padding:20px;
-	font-size:32px;
-	/*color:#000;*/
-    text-shadow:1px 1px 1px rgba(255,255,255,0.9);
-	text-align:center;
-	font-weight:400;
+
+h1 {
+    margin: 0px;
+    padding: 20px;
+    font-size: 32px;
+    /*color:#000;*/
+    text-shadow: 1px 1px 1px rgba(255,255,255,0.9);
+    text-align: center;
+    font-weight: 400;
 }
-h1 span{
-    display:block;
-	font-size:16px;
-	color:gold;
-    font-style:italic;
-    font-family:Georgia, serif;
-	padding-top:5px;
-}
+
+    h1 span {
+        display: block;
+        font-size: 16px;
+        color: gold;
+        font-style: italic;
+        font-family: Georgia, serif;
+        padding-top: 5px;
+    }
 /* Header Style */
-.header{
-	font-family:'Arial Narrow', Arial, sans-serif;
-	line-height: 24px;
-	font-size: 11px;
-	background: #000;
-	opacity: 0.9;
-	text-transform: uppercase;
-	z-index: 9999;
-	position: relative;
-	-moz-box-shadow: 1px 0px 2px #000;
-	-webkit-box-shadow: 1px 0px 2px #000;
-	box-shadow: 1px 0px 2px #000;
+.header {
+    font-family: 'Arial Narrow', Arial, sans-serif;
+    line-height: 24px;
+    font-size: 11px;
+    background: #000;
+    opacity: 0.9;
+    text-transform: uppercase;
+    z-index: 9999;
+    position: relative;
+    -moz-box-shadow: 1px 0px 2px #000;
+    -webkit-box-shadow: 1px 0px 2px #000;
+    box-shadow: 1px 0px 2px #000;
 }
-.header a{
-	padding: 0px 10px;
-	letter-spacing: 1px;
-	color: #ddd;
-	display: block;
-	float: left;
-}
-.header a:hover{
-	color: #fff;
-}
-.header span.right{
-	float: right;
-}
-.header span.right a{
-	float: none;
-	display: inline;
-}
+
+    .header a {
+        padding: 0px 10px;
+        letter-spacing: 1px;
+        color: #ddd;
+        display: block;
+        float: left;
+    }
+
+        .header a:hover {
+            color: #fff;
+        }
+
+    .header span.right {
+        float: right;
+    }
+
+        .header span.right a {
+            float: none;
+            display: inline;
+        }
 
 span form {
     display: inline;
@@ -147,23 +167,26 @@ span form {
 
 /*Сылки на выбор языка*/
 a.select-lang, a.select-not-lang {
-  position: relative;
-  display: block;
-  float: left;
-  padding: 10px 5px;
+    position: relative;
+    display: block;
+    float: left;
+    padding: 10px 5px;
 }
+
 a.select-lang {
-  font-weight: bold;
-  color:#fff200;
+    font-weight: bold;
+    color: #fff200;
 }
+
 a.select-not-lang {
-  color:green;
+    color: green;
 }
 /*Блокировка экрана*/
 .LockOff {
     display: none;
     visibility: hidden;
 }
+
 .LockOn {
     display: block;
     visibility: visible;
@@ -183,26 +206,44 @@ a.select-not-lang {
     color: #0033CC;
 }
 
-#message-error{
+#message-error {
     text-align: center;
 }
 
 
-#message-error h2{
-	margin:0px;
-	padding:20px;
-	font-size:25px;
-	/*color:#000;*/
-    text-shadow:1px 1px 1px rgba(255,255,255,0.9);
-	text-align:center;
-	font-weight:400;
-}
-#message-error h2 span{
-    /*display:block;*/
-	/*font-size:16px;*/
-	color:gold;
-    font-style:italic;
-    font-family:Georgia, serif;
-	padding-top:5px;
+    #message-error h2 {
+        margin: 0px;
+        padding: 20px;
+        font-size: 25px;
+        /*color:#000;*/
+        text-shadow: 1px 1px 1px rgba(255,255,255,0.9);
+        text-align: center;
+        font-weight: 400;
+    }
+
+        #message-error h2 span {
+            /*display:block;*/
+            /*font-size:16px;*/
+            color: gold;
+            font-style: italic;
+            font-family: Georgia, serif;
+            padding-top: 5px;
+        }
+
+#page-width {
+    /*text-align:center;*/
+    margin-left: auto;
+    margin-right: auto;
 }
 
+.wide {
+    width: auto
+}
+
+.average {
+    width: 1200px;
+}
+
+narrow {
+    width: 800px;
+}

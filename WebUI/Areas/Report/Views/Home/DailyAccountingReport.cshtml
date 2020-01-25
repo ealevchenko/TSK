@@ -14,9 +14,11 @@
 
     <script>
         $('body').addClass('img-header-global');
+        $('#page-width').addClass('wide');
     </script>
 
     <script>
+
         var mode_run = '@System.Configuration.ConfigurationManager.AppSettings["ModeRun"]';
         var logs = '@System.Configuration.ConfigurationManager.AppSettings["Logs"]';
     </script>
@@ -50,4 +52,3 @@
         <table class='display compact' id="table-report" style="width:100%" cellpadding="0"></table>
     </div>
 </div>
-

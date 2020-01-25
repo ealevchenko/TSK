@@ -115,12 +115,12 @@ table.dataTable tbody tr.nakladnaya {
 
 /*Показывает или прячить детали*/
 td.details-control {
-    background: url('../../Content/DataTables/images/details_open.png') no-repeat center center;
+    background: url('../../Content/DataTables/media/images/details_open.png') no-repeat center center;
     cursor: pointer;
 }
 
 tr.shown td.details-control {
-    background: url('../../Content/DataTables/images/details_close.png') no-repeat center center;
+    background: url('../../Content/DataTables/media/images/details_close.png') no-repeat center center;
 }
 
 .detali-operation {
