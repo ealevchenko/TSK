@@ -53,6 +53,8 @@
     <Compile Include="Abstract\ILogs.cs" />
     <Compile Include="Abstract\ISettings.cs" />
     <Compile Include="Abstract\IRepository.cs" />
+    <Compile Include="Concrete\EFDaily_Accounting_Detali_Report.cs" />
+    <Compile Include="Concrete\EFDaily_Accounting_Report.cs" />
     <Compile Include="Concrete\EFLogs.cs" />
     <Compile Include="Concrete\EFCat_Werks.cs" />
     <Compile Include="Concrete\EFCat_OZM_GSM.cs" />
