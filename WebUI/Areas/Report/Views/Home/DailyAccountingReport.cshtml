@@ -1,0 +1,53 @@
+﻿@{
+    ViewBag.Title = "Экипировка ст.'Карьерная ГД'. Суточный отчет";
+    ViewBag.section = "Суточный отчет";
+}
+
+@section styles {
+    @Styles.Render("~/jquery-ui/css")
+    @Styles.Render("~/DataTables/css")
+    @Styles.Render("~/DateTime/css")
+    <link rel="stylesheet" type="text/css" href="~/Content/report/report.css">
+}
+
+@section scripts {
+
+    <script>
+        $('body').addClass('img-header-global');
+    </script>
+
+    <script>
+        var mode_run = '@System.Configuration.ConfigurationManager.AppSettings["ModeRun"]';
+        var logs = '@System.Configuration.ConfigurationManager.AppSettings["Logs"]';
+    </script>
+
+    @Scripts.Render("~/bundles/Ajax")
+    @Scripts.Render("~/bundles/Moment")
+    @Scripts.Render("~/bundles/jquery-ui")
+    @Scripts.Render("~/bundles/DataTables")
+    @Scripts.Render("~/bundles/DateTime")
+
+    <script src="~/Scripts/shared/common.js" type="text/javascript"></script>
+    <script src="~/Scripts/shared/tsk_api.js" type="text/javascript"></script>
+    <script src="~/Scripts/report/report_daily_accounting.js" type="text/javascript"></script>
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-sm-12">
+                <label class="control-label">Выберите период :</label>
+                <div>
+                    <span id="select-range-date">
+                        <input class="control-label" id="date-start" name="date-start" size="20">
+                        <input class="control-label" id="date-stop" name="date-stop" size="20">
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <table class='display compact' id="table-report" style="width:100%" cellpadding="0"></table>
+    </div>
+</div>
+
