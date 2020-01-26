@@ -31,5 +31,10 @@ namespace WebUI.Areas.Report.Controllers
         {
             return View();
         }
+        // Сменный отчет
+        public ActionResult ShiftReport()
+        {
+            return View();
+        }
     }
 }

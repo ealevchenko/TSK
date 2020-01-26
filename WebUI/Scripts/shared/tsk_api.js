@@ -464,3 +464,26 @@ TSK_API.prototype.getCurrentRemainsTank = function (callback) {
         },
     });
 };
+
+TSK_API.prototype.getRemainsTankOfDate = function (date, callback) {
+    $.ajax({
+        type: 'GET',
+        url: '../../api/tsk/remains_tank/date/' + toISOStringTZ(date).substring(0, 19),
+        async: true,
+        dataType: 'json',
+        beforeSend: function () {
+            AJAXBeforeSend();
+        },
+        success: function (data) {
+            if (typeof callback === 'function') {
+                callback(data);
+            }
+        },
+        error: function (x, y, z) {
+            OnAJAXErrorMetod("TSK_API.getRemainsTankOfDate", x, y, z);
+        },
+        complete: function () {
+            AJAXComplete();
+        },
+    });
+};

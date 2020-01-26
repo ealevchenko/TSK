@@ -77,5 +77,25 @@ namespace WebUI.Controllers.api
                 return BadRequest(e.Message);
             }
         }
+
+        // GET: api/tsk/remains_tank/date/2020-01-01T00:00:00
+        [Route("date/{date:datetime}")]
+        [ResponseType(typeof(RemainsTank))]
+        public IHttpActionResult GetRemainsTank(DateTime date)
+        {
+            try
+            {
+                DateTime stop = date.AddMinutes(1);
+                RemainsTank rt = this.ef_rt
+                    .Get()
+                    .Where(s => s.date >= date & s.date <=stop)
+                    .FirstOrDefault();
+                return Ok(rt);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }
