@@ -351,11 +351,11 @@ $(document).ready(function () {
                         $('select#variant-sap'),
                         { width: 300 },
                         [
-                            { value: 2, text: 'По резервированию' },
-                            { value: 3, text: 'По исходящей поставке' },
-                            { value: 4, text: 'По требованию (самовывоз)' },
-                            { value: 5, text: 'Заправка в баки ТС' },
-                            { value: 6, text: 'Выдача в топливозаправщик (супер-маршрут).' }
+                            { value: 2, text: 'По резервированию', disabled: (num_trk ===2 ? false : true)},
+                            { value: 3, text: 'По исходящей поставке', disabled: (num_trk === 2 ? false : true) },
+                            { value: 4, text: 'По требованию (самовывоз)', disabled: false },
+                            { value: 5, text: 'Заправка в баки ТС', disabled: false },
+                            { value: 6, text: 'Выдача в топливозаправщик (супер-маршрут).', disabled: (num_trk === 2 ? false : true) }
                         ],
                         null,
                         -1,
