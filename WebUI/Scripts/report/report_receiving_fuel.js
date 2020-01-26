@@ -234,7 +234,7 @@ $(document).ready(function () {
                     "id": data.id,
                     "railway_num_nak": data.railway_num_nak,
                     "railway_num_tanker": data.railway_num_tanker,
-                    "start_datetime": data.start_datetime,
+                    "start_datetime": data.start_datetime !== null ? data.start_datetime.replace("T", " ") : null,
                     "railway_level": data.railway_level,
                     "railway_volume": data.railway_volume,
                     "railway_dens": data.railway_dens,

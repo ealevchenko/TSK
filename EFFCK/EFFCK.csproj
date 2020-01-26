@@ -56,6 +56,8 @@
     <Compile Include="Abstract\IRepository.cs" />
     <Compile Include="Concrete\EFDaily_Accounting_Detali_Report.cs" />
     <Compile Include="Concrete\EFDaily_Accounting_Report.cs" />
+    <Compile Include="Concrete\EFRemainsTank.cs" />
+    <Compile Include="Concrete\EFRemainsTanks.cs" />
     <Compile Include="Concrete\EFReceivingFuel.cs" />
     <Compile Include="Concrete\EFReceivingTanks.cs" />
     <Compile Include="Concrete\EFLogs.cs" />

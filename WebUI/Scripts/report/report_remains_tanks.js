@@ -99,6 +99,7 @@ $(document).ready(function () {
                 }
                 panel_report.obj_date_range.data('dateRangePicker').setDateRange(moment(date_start).format('DD.MM.YYYY HH:mm:'), moment(date_stop).format('DD.MM.YYYY HH:mm:'), true);
                 table_report.viewTable(true);
+                table_report_curren.viewTable(true);
             }
         },
         //
@@ -123,50 +124,23 @@ $(document).ready(function () {
                     jQueryUI: true,
                     "createdRow": function (row, data, index) {
                         $(row).attr('id', data.id);
+                        $('td', row).eq(1).addClass('td-number');
+                        $('td', row).eq(2).addClass('td-number');
                         $('td', row).eq(3).addClass('td-number');
                         $('td', row).eq(4).addClass('td-number');
                         $('td', row).eq(5).addClass('td-number');
+                        $('td', row).eq(6).addClass('td-number');
                         $('td', row).eq(7).addClass('td-number');
                     },
-
-                    "footerCallback": function (row, data, start, end, display) {
-                        var api = this.api(), data;
-                        // Remove the formatting to get integer data for summation
-                        var intVal = function (i) {
-                            return typeof i === 'string' ?
-                                i.replace(/[\$,]/g, '') * 1 :
-                                typeof i === 'number' ?
-                                    i : 0;
-                        };
-                        // Total volume
-                        total_dt_volume = api
-                            .data()
-                            .reduce(function (a, b) {
-                                return intVal(a) + intVal(b.VOLUME);
-                            }, 0);
-                        // Total mass
-                        total_dt_mass = api
-                            .data()
-                            .reduce(function (a, b) {
-                                return intVal(a) + intVal(b.MASS);
-                            }, 0);
-                        $('td#dt-volume').text(total_dt_volume.toFixed(2) + ' (л)');
-                        $('td#dt-mass').text(total_dt_mass.toFixed(2) + ' (кг)');
-                    },
                     columns: [
-                        { data: "Start_Date", title: 'Дата и время', width: "50px", orderable: true, searchable: true },
-                        { data: "TRANSP_FAKT", title: 'Гос.Номер ТС', width: "50px", orderable: true, searchable: true },
-                        { data: "fuel_type", title: "Вид ГСМ", width: "50px", orderable: true, searchable: true },
-                        { data: "VOLUME", title: "Выдано фактически (л)", width: "50px", orderable: true, searchable: true },
-                        { data: "MASS", title: "Выдано фактически (кг)", width: "50px", orderable: true, searchable: true },
-                        { data: "PLOTNOST", title: "Плотность (кг/м3)", width: "50px", orderable: true, searchable: true },
-                        { data: "sap_sending", title: "Синхр. с SAP", width: "150px", orderable: true, searchable: true },
-                        { data: "Target_Volume", title: "Доза ГСМ (л)", width: "50px", orderable: true, searchable: true },
-                        { data: "FLAG_R", title: "Режим выдачи", width: "100px", orderable: true, searchable: true },
-                        { data: "Out_Type", title: "№ колонки", width: "50px", orderable: true, searchable: true },
-                        { data: "N_BAK", title: "Резервуар", width: "100px", orderable: false, searchable: true },
-                        { data: "RFID", title: "ID карты", width: "100px", orderable: true, searchable: true },
-                        { data: "User", title: "Оператор", width: "100px", orderable: true, searchable: true },
+                        { data: "date", title: 'Дата и время', width: "50px", orderable: true, searchable: true },
+                        { data: "level", title: 'Уровень', width: "50px", orderable: true, searchable: true },
+                        { data: "volume", title: "Объем (л)", width: "50px", orderable: true, searchable: true },
+                        { data: "mass", title: "Масса (кг)", width: "50px", orderable: true, searchable: true },
+                        { data: "dens_avg", title: "Плотность (кг/м3)", width: "50px", orderable: true, searchable: true },
+                        { data: "dens_calc", title: "Плотность (кг/м3)", width: "50px", orderable: true, searchable: true },
+                        { data: "temp_avg", title: "Температура (гр.)", width: "150px", orderable: true, searchable: true },
+                        { data: "water", title: "Уровень подт. воды", width: "50px", orderable: true, searchable: true },
                     ],
                     dom: 'Bfrtip',
                     stateSave: false,
@@ -178,7 +152,7 @@ $(document).ready(function () {
                         {
                             text: 'Экспорт в Excel',
                             extend: 'excelHtml5',
-                            sheetName: 'Заправочная ведомость',
+                            sheetName: 'Остатки',
                             messageTop: function () {
                                 return '';
                             }
@@ -205,7 +179,7 @@ $(document).ready(function () {
                 LockScreen('Мы обрабатываем ваш запрос...');
                 if (table_report.list | data_refresh === true) {
                     // Обновим данные
-                    tsk.getFuelSaleOfDateTime(
+                    tsk.getRemainsTankOfDateTime(
                         date_start,
                         date_stop,
                         function (result) {
@@ -232,50 +206,16 @@ $(document).ready(function () {
             // Получить строку для таблицы
             getRow: function (data) {
                 return {
+
                     "id": data.id,
-                    "Out_Type": data.Out_Type,
-                    "Target_Volume": data.Target_Volume !== null ? Number(data.Target_Volume).toFixed(1) : null,
-                    "Target_Dens": data.Target_Dens !== null ? Number(data.Target_Dens).toFixed(1) : null,
-                    "Target_Mass": data.Target_Mass !== null ? Number(data.Target_Mass).toFixed(1) : null,
-                    "User": data.User,
-                    "Crated_Date": data.Crated_Date,
-                    "Start_Counter": data.Start_Counter !== null ? Number(data.Start_Counter).toFixed(0) : null,
-                    "Start_Level": data.Start_Level !== null ? Number(data.Start_Level).toFixed(3) : null,
-                    "Start_Volume": data.Start_Volume !== null ? Number(data.Start_Volume).toFixed(3) : null,
-                    "Start_Mass": data.Start_Mass !== null ? Number(data.Start_Mass).toFixed(3) : null,
-                    "Start_Dens": data.Start_Dens !== null ? Number(data.Start_Dens).toFixed(1) : null,
-                    "Start_Temp": data.Start_Temp !== null ? Number(data.Start_Temp).toFixed(2) : null,
-                    "Start_Water": data.Start_Water !== null ? Number(data.Start_Water).toFixed(1) : null,
-                    "Start_Date": data.Start_Date !== null ? data.Start_Date.replace("T", " ") : null,
-                    "End_Counter": data.End_Counter !== null ? Number(data.End_Counter).toFixed(0) : null,
-                    "End_Level": data.End_Level !== null ? Number(data.End_Level).toFixed(3) : null,
-                    "End_Volume": data.End_Volume !== null ? Number(data.End_Volume).toFixed(3) : null,
-                    "End_Mass": data.End_Mass !== null ? Number(data.End_Mass).toFixed(3) : null,
-                    "End_Dens": data.End_Dens !== null ? Number(data.End_Dens).toFixed(1) : null,
-                    "End_Temp": data.End_Temp !== null ? Number(data.End_Temp).toFixed(2) : null,
-                    "End_Water": data.End_Water !== null ? Number(data.End_Water).toFixed(1) : null,
-                    "End_Date": data.End_Date,
-                    "close": data.close,
-                    "RFID": data.RFID,
-                    "FLAG_R": outMode(data.FLAG_R),
-                    "N_TREB": data.N_TREB,
-                    "RSPOS": data.RSPOS,
-                    "N_BAK": data.N_BAK,
-                    "fuel_type": "ДТ(107000024)",
-                    "OZM_BAK": data.OZM_BAK,
-                    "OZM_TREB": data.OZM_TREB,
-                    "PLOTNOST": data.PLOTNOST !== null ? Number(data.PLOTNOST).toFixed(2) : null,
-                    "VOLUME": data.VOLUME !== null ? Number(data.VOLUME).toFixed(2) : null,
-                    "MASS": data.MASS !== null ? Number(data.MASS).toFixed(2) : null,
-                    "LOGIN_R": data.LOGIN_R,
-                    "LOGIN_EXP": data.LOGIN_EXP,
-                    "N_POST": data.N_POST,
-                    "TRANSP_FAKT": data.TRANSP_FAKT,
-                    "LGORT": data.LGORT,
-                    "WERKS": data.WERKS,
-                    "N_DEB": data.N_DEB,
-                    "sap_sending": data.sap_sending !== null ? 'Да' : 'Нет',
-                    "sending": data.sending
+                    "date": data.date !== null ? data.date.replace("T", " ") : null,
+                    "level": data.level !== null ? Number(data.level).toFixed(2) : null,
+                    "volume": data.volume !== null ? Number(data.volume).toFixed(3) : null,
+                    "mass": data.mass !== null ? Number(data.mass).toFixed(3) : null,
+                    "dens_avg": data.dens_avg !== null ? Number(data.dens_avg).toFixed(1) : null,
+                    "dens_calc": data.dens_calc !== null ? Number(data.dens_calc).toFixed(1) : null,
+                    "temp_avg": data.temp_avg !== null ? Number(data.temp_avg).toFixed(3) : null,
+                    "water": data.water !== null ? Number(data.water).toFixed(1) : null,
                 };
             },
             //// Обновить данные в таблице
@@ -378,10 +318,108 @@ $(document).ready(function () {
             //        $(this).toggleClass('closed').siblings('.cd-filter-content').slideToggle(300);
             //    });
             //}
+        },
+        //
+        table_report_curren = {
+            html_table: $('#table-report-current'),
+            obj: null,
+            select: null,
+            // Инициализировать таблицу
+            init: function () {
+                table_report_curren.obj = this.html_table.DataTable({
+                    "paging": false,
+                    "searching": false,
+                    "ordering": false,
+                    "info": false,
+                    "select": false,
+                    "autoWidth": false,
+                    //"filter": true,
+                    //"scrollY": "600px",
+                    "scrollX": true,
+                    language: language_table_ru(),
+                    jQueryUI: true,
+                    "createdRow": function (row, data, index) {
+                        //$(row).attr('id', data.id);
+                        $('td', row).eq(1).addClass('td-number');
+                        $('td', row).eq(2).addClass('td-number');
+                        $('td', row).eq(3).addClass('td-number');
+                        $('td', row).eq(4).addClass('td-number');
+                        $('td', row).eq(5).addClass('td-number');
+                        $('td', row).eq(6).addClass('td-number');
+                        $('td', row).eq(7).addClass('td-number');
+                    },
+                    columns: [
+                        { data: "date", title: 'Дата и время', width: "50px", orderable: true, searchable: true },
+                        { data: "level", title: 'Уровень', width: "50px", orderable: true, searchable: true },
+                        { data: "volume", title: "Объем (л)", width: "50px", orderable: true, searchable: true },
+                        { data: "mass", title: "Масса (кг)", width: "50px", orderable: true, searchable: true },
+                        { data: "dens_avg", title: "Плотность (кг/м3)", width: "50px", orderable: true, searchable: true },
+                        { data: "dens_calc", title: "Плотность (кг/м3)", width: "50px", orderable: true, searchable: true },
+                        { data: "temp_avg", title: "Температура (гр.)", width: "150px", orderable: true, searchable: true },
+                        { data: "water", title: "Уровень подт. воды", width: "50px", orderable: true, searchable: true },
+                    ],
+                    dom: 'Bfrtip',
+                    stateSave: false,
+                    buttons: [
+                        {
+                            text: 'Скопировать в буфер',
+                            extend: 'copyHtml5',
+                        },
+                        {
+                            text: 'Экспорт в Excel',
+                            extend: 'excelHtml5',
+                            sheetName: 'Текущий остаток',
+                            messageTop: function () {
+                                return '';
+                            }
+                        },
+                    ],
+                });
+            },
+            // Показать таблицу с данными
+            viewTable: function (data_refresh) {
+                LockScreen('Мы обрабатываем ваш запрос...');
+                if (table_report_curren.list | data_refresh === true) {
+                    // Обновим данные
+                    tsk.getCurrentRemainsTank(
+                        function (result) {
+                            //table_report_curren.list = result;
+                            table_report_curren.loadDataTable(result);
+                            table_report_curren.obj.draw();
+                        }
+                    );
+                } else {
+                    table_report_curren.loadDataTable(mors.list_cards_wagons);
+                    table_report_curren.obj.draw();
+                };
+            },
+            // Загрузить данные
+            loadDataTable: function (data) {
+                table_report_curren.list = data;
+                table_report_curren.obj.clear();
+                for (i = 0; i < data.length; i++) {
+                    table_report_curren.obj.row.add(table_report_curren.getRow(data[i]));
+                }
+                LockScreenOff();
+            },
+            // Получить строку для таблицы
+            getRow: function (data) {
+                return {
+                    "date": data.date !== null ? data.date.replace("T", " ") : null,
+                    "level": data.level !== null ? Number(data.level).toFixed(2) : null,
+                    "volume": data.volume !== null ? Number(data.volume).toFixed(3) : null,
+                    "mass": data.mass !== null ? Number(data.mass).toFixed(3) : null,
+                    "dens_avg": data.dens_avg !== null ? Number(data.dens_avg).toFixed(1) : null,
+                    "dens_calc": data.dens_calc !== null ? Number(data.dens_calc).toFixed(1) : null,
+                    "temp_avg": data.temp_avg !== null ? Number(data.temp_avg).toFixed(3) : null,
+                    "water": data.water !== null ? Number(data.water).toFixed(1) : null,
+                };
+            },
         };
-
     // Инициализация
     panel_report.init();
     table_report.init();
+    table_report_curren.init();
     panel_report.view_report();
+
 });

@@ -26,5 +26,10 @@ namespace WebUI.Areas.Report.Controllers
             return View();
         }
 
+        // Остатки топлива
+        public ActionResult RemainsTanks()
+        {
+            return View();
+        }
     }
 }

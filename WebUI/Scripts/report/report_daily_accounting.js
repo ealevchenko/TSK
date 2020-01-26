@@ -184,7 +184,7 @@ $(document).ready(function () {
                     "type": data.type,
                     "ukt_zed": data.ukt_zed,
                     "fuel_name": data.fuel_name,
-                    "date_start": data.date_start,
+                    "date_start": data.date_start !== null ? data.date_start.replace("T", " ") : null,
                     "date_stop": data.date_stop,
                     "volume_start": data.volume_start,
                     "mass_start": data.mass_start !== null ? Number(data.mass_start).toFixed(2) : 0.00,
@@ -353,7 +353,7 @@ $(document).ready(function () {
                             table_detali.row.add({
                                 "id": result[i].id,
                                 "fuel_type": result[i].fuel_type,
-                                "dt_start": result[i].dt_start,
+                                "dt_start": result[i].dt_start !== null ? result[i].dt_start.replace("T", " ") : null,
                                 "dt_stop": result[i].dt_stop,
                                 "ukt_zed": result[i].ukt_zed,
                                 "tank": result[i].tank,

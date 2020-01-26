@@ -417,3 +417,50 @@ TSK_API.prototype.getReceivingFuelOfDateTime = function (start, stop, callback) 
         },
     });
 };
+//======= RemainsTank ==========================================
+// Получить выдачи за период
+TSK_API.prototype.getRemainsTankOfDateTime = function (start, stop, callback) {
+    $.ajax({
+        type: 'GET',
+        url: '../../api/tsk/remains_tank/start/' + toISOStringTZ(start).substring(0, 19) + '/stop/' + toISOStringTZ(stop).substring(0, 19),
+        async: true,
+        dataType: 'json',
+        beforeSend: function () {
+            AJAXBeforeSend();
+        },
+        success: function (data) {
+            if (typeof callback === 'function') {
+                callback(data);
+            }
+        },
+        error: function (x, y, z) {
+            OnAJAXErrorMetod("TSK_API.getRemainsTankOfDateTime", x, y, z);
+        },
+        complete: function () {
+            AJAXComplete();
+        },
+    });
+};
+// Получить текущий остаток
+TSK_API.prototype.getCurrentRemainsTank = function (callback) {
+    $.ajax({
+        type: 'GET',
+        url: '../../api/tsk/remains_tank/current',
+        async: true,
+        dataType: 'json',
+        beforeSend: function () {
+            AJAXBeforeSend();
+        },
+        success: function (data) {
+            if (typeof callback === 'function') {
+                callback(data);
+            }
+        },
+        error: function (x, y, z) {
+            OnAJAXErrorMetod("TSK_API.getCurrentRemainsTank", x, y, z);
+        },
+        complete: function () {
+            AJAXComplete();
+        },
+    });
+};
