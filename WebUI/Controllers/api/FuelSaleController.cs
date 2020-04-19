@@ -113,7 +113,7 @@ namespace WebUI.Controllers.api
         // GET: api/tsk/fuel_sale/start/2020-01-10T00:00:00/stop/2020-01-20T23:59:59
         [Route("start/{start:datetime}/stop/{stop:datetime}")]
         [ResponseType(typeof(FuelSale))]
-        public IHttpActionResult GetFuelSale(DateTime start, DateTime stop)
+        public IHttpActionResult GetFuelSaleNow(DateTime start, DateTime stop)
         {
             try
             {
@@ -132,5 +132,24 @@ namespace WebUI.Controllers.api
                 return BadRequest(e.Message);
             }
         }
+
+
+        // GET: api/tsk/fuel_sale/old/start/2020-04-18T00:00:00/stop/2020-04-18T23:59:59
+        [Route("old/start/{start:datetime}/stop/{stop:datetime}")]
+        [ResponseType(typeof(FuelSale))]
+        public IHttpActionResult GetFuelSaleOld(DateTime start, DateTime stop)
+        {
+            try
+            {
+                string sql = "select * from get_fuelsale(Convert(datetime,'" + start.ToString("yyyy-MM-dd HH:mm:ss") + "',120),Convert(datetime,'" + stop.ToString("yyyy-MM-dd HH:mm:ss") + "',120))";
+                List<FuelSale> list = this.ef_fs.Database.SqlQuery<FuelSale>(sql).ToList();
+                return Ok(list);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
     }
 }

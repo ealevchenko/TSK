@@ -439,12 +439,12 @@ $(document).ready(function () {
                         { data: "bak", title: 'Резервуар', width: "50px", orderable: true, searchable: true },
                         { data: "date_start", title: 'Дата начала смены', width: "50px", orderable: true, searchable: true },
                         { data: "date_stop", title: 'Дата конца смены', width: "50px", orderable: true, searchable: true },
-                        { data: "volume_start", title: 'Обьем в начале смены (л.)', width: "50px", orderable: true, searchable: true },
-                        { data: "mass_start", title: "Масса в начале смены (кг.)", width: "50px", orderable: true, searchable: true },
-                        { data: "volume_stop", title: "Обьем в конце смены (л.)", width: "50px", orderable: true, searchable: true },
-                        { data: "mass_stop", title: "Масса в конце смены (кг.)", width: "50px", orderable: true, searchable: true },
-                        { data: "volume_diff", title: "Разница (кг.)", width: "50px", orderable: true, searchable: true },
-                        { data: "mass_diff", title: "Разница (л.)", width: "150px", orderable: true, searchable: true },
+                        { data: "volume_start", title: 'Обьем в начале смены (м3.)', width: "50px", orderable: true, searchable: true },
+                        { data: "mass_start", title: "Масса в начале смены (т.)", width: "50px", orderable: true, searchable: true },
+                        { data: "volume_stop", title: "Обьем в конце смены (м3.)", width: "50px", orderable: true, searchable: true },
+                        { data: "mass_stop", title: "Масса в конце смены (т.)", width: "50px", orderable: true, searchable: true },
+                        { data: "volume_diff", title: "Разница (м3.)", width: "50px", orderable: true, searchable: true },
+                        { data: "mass_diff", title: "Разница (т.)", width: "150px", orderable: true, searchable: true },
                     ],
                     dom: 'Bfrtip',
                     stateSave: false,
@@ -484,17 +484,21 @@ $(document).ready(function () {
                 table_report_2.loadItems(function () {
                     table_report_2.obj.clear();
                     if (table_report_2.start_item !== null && table_report_2.stop_item !== null) {
+                        //var d = moment(table_report_2.start_item.date).format('DD.MM.YYYY HH:mm');
                         table_report_2.obj.row.add(
                             {
                                 "bak": '№1',
-                                "date_start": table_report_2.start_item.date !== null ? table_report_2.start_item.date.replace("T", " ") : null,
+                                "date_start": table_report_2.start_item.date !== null ? moment(table_report_2.start_item.date).format('DD.MM.YYYY HH:mm') : null,
+                                //"date_start": table_report_2.start_item.date !== null ? table_report_2.start_item.date.replace("T", " ") : null,
+                                //moment(s_date, 'DD.MM.YYYY HH:mm')
                                 "volume_start": table_report_2.start_item.volume !== null ? Number(table_report_2.start_item.volume).toFixed(3) : '0.000',
                                 "mass_start": table_report_2.start_item.mass !== null ? Number(table_report_2.start_item.mass).toFixed(2) : '0.00',
-                                "date_stop": table_report_2.stop_item.date !== null ? table_report_2.stop_item.date.replace("T", " ") : null,
+                                "date_stop": table_report_2.stop_item.date !== null ? moment(table_report_2.stop_item.date).format('DD.MM.YYYY HH:mm') : null,
+                                //"date_stop": table_report_2.stop_item.date !== null ? table_report_2.stop_item.date.replace("T", " ") : null,
                                 "volume_stop": table_report_2.stop_item.volume !== null ? Number(table_report_2.stop_item.volume).toFixed(3) : '0.000',
                                 "mass_stop": table_report_2.stop_item.mass !== null ? Number(table_report_2.stop_item.mass).toFixed(2) : '0.00',
-                                "volume_diff": table_report_2.start_item.volume !== null & table_report_2.stop_item.volume ? Number(table_report_2.stop_item.volume - table_report_2.start_item.volume).toFixed(3) : '0.000',
-                                "mass_diff": table_report_2.start_item.mass !== null & table_report_2.stop_item.mass ? Number(table_report_2.stop_item.mass - table_report_2.start_item.mass).toFixed(2) : '0.00',
+                                "volume_diff": table_report_2.start_item.volume !== null & table_report_2.stop_item.volume !== null ? Number(table_report_2.stop_item.volume - table_report_2.start_item.volume).toFixed(3) : '0.000',
+                                "mass_diff": table_report_2.start_item.mass !== null & table_report_2.stop_item.mass!== null ? Number(table_report_2.stop_item.mass - table_report_2.start_item.mass).toFixed(2) : '0.00',
                             }
                         );
                     }
@@ -550,7 +554,7 @@ $(document).ready(function () {
                 } else {
                     tsk.getCurrentRemainsTank(
                         function (result) {
-                            table_report_2.stop_item = result;
+                            table_report_2.stop_item = result && result.length>0 ? result[0] : null;
                             count -= 1;
                             if (count === 0) {
                                 if (typeof callback === 'function') {

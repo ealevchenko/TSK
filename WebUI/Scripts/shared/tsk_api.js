@@ -302,7 +302,7 @@ TSK_API.prototype.postFuelSale = function (fuel_sale, callback) {
 TSK_API.prototype.getFuelSaleOfDateTime = function (start, stop, callback) {
     $.ajax({
         type: 'GET',
-        url: '../../api/tsk/fuel_sale/start/' + toISOStringTZ(start).substring(0, 19) + '/stop/' + toISOStringTZ(stop).substring(0, 19),
+        url: '../../api/tsk/fuel_sale/old/start/' + toISOStringTZ(start).substring(0, 19) + '/stop/' + toISOStringTZ(stop).substring(0, 19),
         async: true,
         dataType: 'json',
         beforeSend: function () {

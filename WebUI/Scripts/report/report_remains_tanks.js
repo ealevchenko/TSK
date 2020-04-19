@@ -135,12 +135,13 @@ $(document).ready(function () {
                     columns: [
                         { data: "date", title: 'Дата и время', width: "50px", orderable: true, searchable: true },
                         { data: "level", title: 'Уровень', width: "50px", orderable: true, searchable: true },
-                        { data: "volume", title: "Объем (л)", width: "50px", orderable: true, searchable: true },
-                        { data: "mass", title: "Масса (кг)", width: "50px", orderable: true, searchable: true },
+                        { data: "volume", title: "Объем (м3)", width: "50px", orderable: true, searchable: true },
+                        { data: "mass", title: "Масса (т)", width: "50px", orderable: true, searchable: true },
                         { data: "dens_avg", title: "Плотность (кг/м3)", width: "50px", orderable: true, searchable: true },
-                        { data: "dens_calc", title: "Плотность (кг/м3)", width: "50px", orderable: true, searchable: true },
+                        //{ data: "dens_calc", title: "Плотность (кг/м3)", width: "50px", orderable: true, searchable: true },
                         { data: "temp_avg", title: "Температура (гр.)", width: "150px", orderable: true, searchable: true },
                         { data: "water", title: "Уровень подт. воды", width: "50px", orderable: true, searchable: true },
+                        { data: "persent", title: "% Заполнения емк.", width: "50px", orderable: true, searchable: true },
                     ],
                     dom: 'Bfrtip',
                     stateSave: false,
@@ -208,14 +209,16 @@ $(document).ready(function () {
                 return {
 
                     "id": data.id,
-                    "date": data.date !== null ? data.date.replace("T", " ") : null,
+                    "date": data.date !== null ? moment(data.date).format('DD.MM.YYYY HH:mm') : null,
                     "level": data.level !== null ? Number(data.level).toFixed(2) : null,
                     "volume": data.volume !== null ? Number(data.volume).toFixed(3) : null,
                     "mass": data.mass !== null ? Number(data.mass).toFixed(3) : null,
                     "dens_avg": data.dens_avg !== null ? Number(data.dens_avg).toFixed(1) : null,
-                    "dens_calc": data.dens_calc !== null ? Number(data.dens_calc).toFixed(1) : null,
+                    //"dens_calc": data.dens_calc !== null ? Number(data.dens_calc).toFixed(1) : null,
                     "temp_avg": data.temp_avg !== null ? Number(data.temp_avg).toFixed(3) : null,
                     "water": data.water !== null ? Number(data.water).toFixed(1) : null,
+                    "persent": data.volume !== null ? Number((Number(data.volume)*100)/355.0).toFixed(2): null,
+
                 };
             },
             //// Обновить данные в таблице
@@ -351,12 +354,14 @@ $(document).ready(function () {
                     columns: [
                         { data: "date", title: 'Дата и время', width: "50px", orderable: true, searchable: true },
                         { data: "level", title: 'Уровень', width: "50px", orderable: true, searchable: true },
-                        { data: "volume", title: "Объем (л)", width: "50px", orderable: true, searchable: true },
-                        { data: "mass", title: "Масса (кг)", width: "50px", orderable: true, searchable: true },
+                        { data: "volume", title: "Объем (м3)", width: "50px", orderable: true, searchable: true },
+                        { data: "mass", title: "Масса (т)", width: "50px", orderable: true, searchable: true },
                         { data: "dens_avg", title: "Плотность (кг/м3)", width: "50px", orderable: true, searchable: true },
-                        { data: "dens_calc", title: "Плотность (кг/м3)", width: "50px", orderable: true, searchable: true },
+                        //{ data: "dens_calc", title: "Плотность (кг/м3)", width: "50px", orderable: true, searchable: true },
                         { data: "temp_avg", title: "Температура (гр.)", width: "150px", orderable: true, searchable: true },
                         { data: "water", title: "Уровень подт. воды", width: "50px", orderable: true, searchable: true },
+                        { data: "persent", title: "% Заполнения емк.", width: "50px", orderable: true, searchable: true },
+
                     ],
                     dom: 'Bfrtip',
                     stateSave: false,
@@ -405,14 +410,15 @@ $(document).ready(function () {
             // Получить строку для таблицы
             getRow: function (data) {
                 return {
-                    "date": data.date !== null ? data.date.replace("T", " ") : null,
+                    "date": data.date !== null ? moment(data.date).format('DD.MM.YYYY HH:mm') : null,
                     "level": data.level !== null ? Number(data.level).toFixed(2) : null,
                     "volume": data.volume !== null ? Number(data.volume).toFixed(3) : null,
                     "mass": data.mass !== null ? Number(data.mass).toFixed(3) : null,
                     "dens_avg": data.dens_avg !== null ? Number(data.dens_avg).toFixed(1) : null,
-                    "dens_calc": data.dens_calc !== null ? Number(data.dens_calc).toFixed(1) : null,
+                    //"dens_calc": data.dens_calc !== null ? Number(data.dens_calc).toFixed(1) : null,
                     "temp_avg": data.temp_avg !== null ? Number(data.temp_avg).toFixed(3) : null,
                     "water": data.water !== null ? Number(data.water).toFixed(1) : null,
+                    "persent": data.volume !== null ? Number((Number(data.volume) * 100) / 355.0).toFixed(2) : null,
                 };
             },
         };
