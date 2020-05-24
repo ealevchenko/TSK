@@ -198,6 +198,7 @@
     <Compile Include="Controllers\api\FuelSaleController.cs" />
     <Compile Include="Controllers\api\LogController.cs" />
     <Compile Include="Controllers\api\OPCController.cs" />
+    <Compile Include="Controllers\api\TRKcountersController.cs" />
     <Compile Include="Controllers\api\RemainsTankController.cs" />
     <Compile Include="Controllers\api\RemainsTanksController.cs" />
     <Compile Include="Controllers\api\SAPController.cs" />

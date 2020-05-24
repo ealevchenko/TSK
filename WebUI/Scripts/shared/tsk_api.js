@@ -487,3 +487,28 @@ TSK_API.prototype.getRemainsTankOfDate = function (date, callback) {
         },
     });
 };
+
+//======= TRKcounters ==========================================
+// Получить счетчики за смену
+TSK_API.prototype.getTRKcountersOfDateTime = function (start, stop, callback) {
+    $.ajax({
+        type: 'GET',
+        url: '../../api/tsk/trk_counters/start/' + toISOStringTZ(start).substring(0, 19) + '/stop/' + toISOStringTZ(stop).substring(0, 19),
+        async: true,
+        dataType: 'json',
+        beforeSend: function () {
+            AJAXBeforeSend();
+        },
+        success: function (data) {
+            if (typeof callback === 'function') {
+                callback(data);
+            }
+        },
+        error: function (x, y, z) {
+            OnAJAXErrorMetod("TSK_API.getRemainsTankOfDateTime", x, y, z);
+        },
+        complete: function () {
+            AJAXComplete();
+        },
+    });
+};

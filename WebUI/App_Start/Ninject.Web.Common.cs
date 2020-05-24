@@ -83,6 +83,8 @@ namespace WebUI.App_Start
             kernel.Bind<EFFCK.Abstract.IRepository<EFFCK.Entities.Cat_OZM_GSM>>().To<EFFCK.Concrete.EFCat_OZM_GSM>();
             kernel.Bind<EFFCK.Abstract.IRepository<EFFCK.Entities.Cat_Werks>>().To<EFFCK.Concrete.EFCat_Werks>();
 
+            kernel.Bind<EFFCK.Abstract.IRepository<EFFCK.Entities.TRKcounters>>().To<EFFCK.Concrete.EFTRKcounters>();
+
             kernel.Bind<EFFCK.Abstract.ILogs>().To<EFFCK.Concrete.EFLogs>();
         }        
     }

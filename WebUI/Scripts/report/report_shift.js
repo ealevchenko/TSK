@@ -21,7 +21,7 @@ $(document).ready(function () {
             },
             activeTable: function (active, data_refresh) {
                 if (active === 0) {
-                    //table_report_1.viewTable(data_refresh);
+                    table_report_1.viewTable(true);
                 }
                 if (active === 1) {
                     table_report_2.viewTable(true);
@@ -148,51 +148,41 @@ $(document).ready(function () {
                     language: language_table_ru(),
                     jQueryUI: true,
                     "createdRow": function (row, data, index) {
-                        $(row).attr('id', data.id);
-                        $('td', row).eq(3).addClass('td-number');
-                        $('td', row).eq(4).addClass('td-number');
-                        $('td', row).eq(5).addClass('td-number');
-                        $('td', row).eq(7).addClass('td-number');
+                        //$(row).attr('id', data.id);
+                        //$('td', row).eq(3).addClass('td-number');
+                        //$('td', row).eq(4).addClass('td-number');
+                        //$('td', row).eq(5).addClass('td-number');
+                        //$('td', row).eq(7).addClass('td-number');
                     },
-
-                    //"footerCallback": function (row, data, start, end, display) {
-                    //    var api = this.api(), data;
-                    //    // Remove the formatting to get integer data for summation
-                    //    var intVal = function (i) {
-                    //        return typeof i === 'string' ?
-                    //            i.replace(/[\$,]/g, '') * 1 :
-                    //            typeof i === 'number' ?
-                    //                i : 0;
-                    //    };
-                    //    // Total volume
-                    //    total_dt_volume = api
-                    //        .data()
-                    //        .reduce(function (a, b) {
-                    //            return intVal(a) + intVal(b.VOLUME);
-                    //        }, 0);
-                    //    // Total mass
-                    //    total_dt_mass = api
-                    //        .data()
-                    //        .reduce(function (a, b) {
-                    //            return intVal(a) + intVal(b.MASS);
-                    //        }, 0);
-                    //    $('td#dt-volume').text(total_dt_volume.toFixed(2) + ' (л)');
-                    //    $('td#dt-mass').text(total_dt_mass.toFixed(2) + ' (кг)');
-                    //},
+                    "footerCallback": function (row, data, start, end, display) {
+                        var api = this.api(), data;
+                        // Remove the formatting to get integer data for summation
+                        var intVal = function (i) {
+                            return typeof i === 'string' ?
+                                i.replace(/[\$,]/g, '') * 1 :
+                                typeof i === 'number' ?
+                                    i : 0;
+                        };
+                        // Total volume
+                        total_dt_volume = api
+                            .data()
+                            .reduce(function (a, b) {
+                                return intVal(a) + intVal(b.diff);
+                            }, 0);
+                        //// Total mass
+                        //total_dt_mass = api
+                        //    .data()
+                        //    .reduce(function (a, b) {
+                        //        return intVal(a) + intVal(b.MASS);
+                        //    }, 0);
+                        $('td#dt-volume').text(total_dt_volume.toFixed(2) + ' (л)');
+                        //$('td#dt-mass').text(total_dt_mass.toFixed(2) + ' (кг)');
+                    },
                     columns: [
-                        { data: "Start_Date", title: 'Дата и время', width: "50px", orderable: true, searchable: true },
-                        { data: "TRANSP_FAKT", title: 'Гос.Номер ТС', width: "50px", orderable: true, searchable: true },
-                        { data: "fuel_type", title: "Вид ГСМ", width: "50px", orderable: true, searchable: true },
-                        { data: "VOLUME", title: "Выдано фактически (л)", width: "50px", orderable: true, searchable: true },
-                        { data: "MASS", title: "Выдано фактически (кг)", width: "50px", orderable: true, searchable: true },
-                        { data: "PLOTNOST", title: "Плотность (кг/м3)", width: "50px", orderable: true, searchable: true },
-                        { data: "sap_sending", title: "Синхр. с SAP", width: "150px", orderable: true, searchable: true },
-                        { data: "Target_Volume", title: "Доза ГСМ (л)", width: "50px", orderable: true, searchable: true },
-                        { data: "FLAG_R", title: "Режим выдачи", width: "100px", orderable: true, searchable: true },
-                        { data: "Out_Type", title: "№ колонки", width: "50px", orderable: true, searchable: true },
-                        { data: "N_BAK", title: "Резервуар", width: "100px", orderable: false, searchable: true },
-                        { data: "RFID", title: "ID карты", width: "100px", orderable: true, searchable: true },
-                        { data: "User", title: "Оператор", width: "100px", orderable: true, searchable: true },
+                        { data: "count", title: 'Счетчик', width: "50px", orderable: true, searchable: true },
+                        { data: "trkBigStart", title: 'На начало смены (л)', width: "50px", orderable: true, searchable: true },
+                        { data: "trkBigStop", title: "На конец смены (л)", width: "50px", orderable: true, searchable: true },
+                        { data: "diff", title: "Изменение (л)", width: "50px", orderable: true, searchable: true },
                     ],
                     dom: 'Bfrtip',
                     stateSave: false,
@@ -231,7 +221,7 @@ $(document).ready(function () {
                 LockScreen('Мы обрабатываем ваш запрос...');
                 if (table_report_1.list | data_refresh === true) {
                     // Обновим данные
-                    tsk.getFuelSaleOfDateTime(
+                    tsk.getTRKcountersOfDateTime(
                         date_start,
                         date_stop,
                         function (result) {
@@ -258,50 +248,10 @@ $(document).ready(function () {
             // Получить строку для таблицы
             getRow: function (data) {
                 return {
-                    "id": data.id,
-                    "Out_Type": data.Out_Type,
-                    "Target_Volume": data.Target_Volume !== null ? Number(data.Target_Volume).toFixed(1) : null,
-                    "Target_Dens": data.Target_Dens !== null ? Number(data.Target_Dens).toFixed(1) : null,
-                    "Target_Mass": data.Target_Mass !== null ? Number(data.Target_Mass).toFixed(1) : null,
-                    "User": data.User,
-                    "Crated_Date": data.Crated_Date,
-                    "Start_Counter": data.Start_Counter !== null ? Number(data.Start_Counter).toFixed(0) : null,
-                    "Start_Level": data.Start_Level !== null ? Number(data.Start_Level).toFixed(3) : null,
-                    "Start_Volume": data.Start_Volume !== null ? Number(data.Start_Volume).toFixed(3) : null,
-                    "Start_Mass": data.Start_Mass !== null ? Number(data.Start_Mass).toFixed(3) : null,
-                    "Start_Dens": data.Start_Dens !== null ? Number(data.Start_Dens).toFixed(1) : null,
-                    "Start_Temp": data.Start_Temp !== null ? Number(data.Start_Temp).toFixed(2) : null,
-                    "Start_Water": data.Start_Water !== null ? Number(data.Start_Water).toFixed(1) : null,
-                    "Start_Date": data.Start_Date !== null ? data.Start_Date.replace("T", " ") : null,
-                    "End_Counter": data.End_Counter !== null ? Number(data.End_Counter).toFixed(0) : null,
-                    "End_Level": data.End_Level !== null ? Number(data.End_Level).toFixed(3) : null,
-                    "End_Volume": data.End_Volume !== null ? Number(data.End_Volume).toFixed(3) : null,
-                    "End_Mass": data.End_Mass !== null ? Number(data.End_Mass).toFixed(3) : null,
-                    "End_Dens": data.End_Dens !== null ? Number(data.End_Dens).toFixed(1) : null,
-                    "End_Temp": data.End_Temp !== null ? Number(data.End_Temp).toFixed(2) : null,
-                    "End_Water": data.End_Water !== null ? Number(data.End_Water).toFixed(1) : null,
-                    "End_Date": data.End_Date,
-                    "close": data.close,
-                    "RFID": data.RFID,
-                    "FLAG_R": outMode(data.FLAG_R),
-                    "N_TREB": data.N_TREB,
-                    "RSPOS": data.RSPOS,
-                    "N_BAK": data.N_BAK,
-                    "fuel_type": "ДТ(107000024)",
-                    "OZM_BAK": data.OZM_BAK,
-                    "OZM_TREB": data.OZM_TREB,
-                    "PLOTNOST": data.PLOTNOST !== null ? Number(data.PLOTNOST).toFixed(2) : null,
-                    "VOLUME": data.VOLUME !== null ? Number(data.VOLUME).toFixed(2) : null,
-                    "MASS": data.MASS !== null ? Number(data.MASS).toFixed(2) : null,
-                    "LOGIN_R": data.LOGIN_R,
-                    "LOGIN_EXP": data.LOGIN_EXP,
-                    "N_POST": data.N_POST,
-                    "TRANSP_FAKT": data.TRANSP_FAKT,
-                    "LGORT": data.LGORT,
-                    "WERKS": data.WERKS,
-                    "N_DEB": data.N_DEB,
-                    "sap_sending": data.sap_sending !== null ? 'Да' : 'Нет',
-                    "sending": data.sending
+                    "count": data.count,
+                    "trkBigStart": data.trkBigStart,
+                    "trkBigStop": data.trkBigStop,
+                    "diff": data.diff
                 };
             },
             //// Обновить данные в таблице
@@ -732,7 +682,7 @@ $(document).ready(function () {
     // Инициализация
     tabs_reports.init();
     panel_report.init();
-    //table_report_1.init();
+    table_report_1.init();
     table_report_2.init();
     panel_report.view_report();
 });

@@ -34,6 +34,8 @@ namespace EFFCK.Concrete
         public virtual DbSet<Settings> Settings { get; set; }
         public virtual DbSet<UsersChanges> UsersChanges { get; set; }
 
+        public virtual DbSet<TRKcounters> TRKcounters { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Cat_Werks>()

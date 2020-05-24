@@ -97,5 +97,25 @@ namespace WebUI.Controllers.api
                 return BadRequest(e.Message);
             }
         }
+
+        // GET: api/tsk/remains_tank/counters/start/2020-05-21T07:00:00/stop/2020-05-21T19:00:00
+        //[Route("counters/start/{start:datetime}/stop/{stop:datetime}")]
+        //[ResponseType(typeof(RemainsTank))]
+        //public IHttpActionResult GetCounters(DateTime start, DateTime stop)
+        //{
+        //    try
+        //    {
+        //        List<RemainsTank> list = this.ef_rt
+        //            .Get()
+        //            .Where(s => s.date >= start && s.date <= stop)
+        //            .ToList();
+        //        return Ok(list);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return BadRequest(e.Message);
+        //    }
+        //}
+
     }
 }

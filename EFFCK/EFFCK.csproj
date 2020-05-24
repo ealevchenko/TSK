@@ -66,6 +66,7 @@
     <Compile Include="Concrete\EFCat_Depots.cs" />
     <Compile Include="Concrete\EFFuelSale.cs" />
     <Compile Include="Concrete\EFSettings.cs" />
+    <Compile Include="Concrete\EFTRKcounters.cs" />
     <Compile Include="Concrete\EFUsersChanges.cs" />
     <Compile Include="Concrete\EFRepository.cs" />
     <Compile Include="Concrete\EFDbContext.cs" />
@@ -90,6 +91,7 @@
     <Compile Include="Entities\ReceivingTanks.cs" />
     <Compile Include="Entities\RemainsTank.cs" />
     <Compile Include="Entities\RemainsTanks.cs" />
+    <Compile Include="Entities\TRKcounters.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
